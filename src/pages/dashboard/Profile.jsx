@@ -15,7 +15,7 @@ const Profile = () => {
     const [previewImage, setPreviewImage] = useState("");
 
     const authToken = localStorage.getItem("authToken"); // Replace with actual token
-    const API_URL = "https://health-care-nine-indol.vercel.app/api/account/user/";
+    const API_URL = "https://health-care-nine-indol.vercel.app/api/auth/user/";
 
     // ImgBB API URL and key
     const IMGBB_API_URL = "https://api.imgbb.com/1/upload?key=6e856a08d1a2dc102e60c57e964312e5";
