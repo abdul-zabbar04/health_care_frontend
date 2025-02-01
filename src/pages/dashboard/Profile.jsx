@@ -17,6 +17,9 @@ const Profile = () => {
     const authToken = localStorage.getItem("authToken"); // Replace with actual token
     const API_URL = "https://health-care-nine-indol.vercel.app/api/account/user/";
 
+    // ImgBB API URL and key
+    const IMGBB_API_URL = "https://api.imgbb.com/1/upload?key=6e856a08d1a2dc102e60c57e964312e5";
+
     // Fetch user data
     useEffect(() => {
         const fetchUserProfile = async () => {
@@ -47,40 +50,55 @@ const Profile = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    // Handle profile picture change
-    const handleProfilePictureChange = (e) => {
+    // Handle profile picture change and upload to ImgBB
+    const handleProfilePictureChange = async (e) => {
         const file = e.target.files[0];
         if (file) {
             setProfileImage(file);
             setPreviewImage(URL.createObjectURL(file));
+
+            // Create FormData to upload the image to ImgBB
+            const formDataImgBB = new FormData();
+            formDataImgBB.append("image", file);
+
+            try {
+                const response = await axios.post(IMGBB_API_URL, formDataImgBB);
+                const imageUrl = response.data.data.url; // Get the uploaded image URL from ImgBB
+
+                // Set the profile image URL to be sent to the backend
+                setProfileImage(imageUrl);
+            } catch (err) {
+                console.error("Error uploading image to ImgBB:", err);
+                alert("Failed to upload image.");
+            }
         }
     };
 
     // Handle profile update (PUT request using FormData)
     const handleUpdateProfile = async () => {
         const updatedFormData = new FormData();
-    
+
         // Ensure required fields are included
         updatedFormData.append("username", userData.username);
         updatedFormData.append("email", userData.email);
         updatedFormData.append("role", userData.role); // Just in case
-    
+
         // Allow updates only for first_name, last_name, and profile_image
         updatedFormData.append("first_name", formData.first_name);
         updatedFormData.append("last_name", formData.last_name);
-    
+
         if (profileImage) {
-            updatedFormData.append("profile_image", profileImage);
+            updatedFormData.append("profile_image", profileImage); // Now it's the ImgBB URL
         }
-    
+
         try {
-            const response = await axios.put("https://health-care-nine-indol.vercel.app/api/account/user/", updatedFormData, {
+            const response = await axios.put(API_URL, updatedFormData, {
                 headers: {
                     Authorization: `Token ${authToken}`,
                     "Content-Type": "multipart/form-data",
                 },
             });
-    
+
             setUserData(response.data); // Update state with new data
             setIsEditing(false);
             setIsEditingPic(false);
@@ -90,6 +108,7 @@ const Profile = () => {
             alert("Failed to update profile. Check console for details.");
         }
     };
+
     // Handle account deletion (DELETE request)
     const handleDeleteAccount = async () => {
         if (!window.confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
@@ -101,7 +120,7 @@ const Profile = () => {
                     Authorization: `Token ${authToken}`,
                 },
             });
-            localStorage.removeItem("authToken")
+            localStorage.removeItem("authToken");
             alert("Account deleted successfully.");
             setUserData(null);
         } catch (err) {
