@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router";
 
 const Dashboard = () => {
+    const navigate= useNavigate();
     const [profileCompleted, setProfileCompleted] = useState(null);
     const [userType, setUserType] = useState(null);
     const authToken = localStorage.getItem("authToken");
@@ -22,7 +24,8 @@ const Dashboard = () => {
                         ? "https://health-care-nine-indol.vercel.app/api/account/patient-profile/"
                         : "https://health-care-nine-indol.vercel.app/api/account/doctor-profile/";
 
-                await axios.get(profileUrl, { headers: { Authorization: `Token ${authToken}` } });
+                const roleACData= await axios.get(profileUrl, { headers: { Authorization: `Token ${authToken}` } });
+                console.log(roleACData);
 
                 setProfileCompleted(true);
             } catch (error) {
@@ -43,7 +46,7 @@ const Dashboard = () => {
                 </h1>
                 <button
                     className="btn btn-primary mt-4"
-                    onClick={() => (window.location.href = userType === "patient" ? "/patient-register" : "/doctor-register")}
+                    onClick={()=>navigate(userType === "patient" ? "/patient-register" : "/doctor-register")}
                 >
                     Complete Registration
                 </button>
@@ -56,7 +59,7 @@ const Dashboard = () => {
 // Separate function to get role
 const getUserType = async (authToken) => {
     try {
-        const { data } = await axios.get("https://health-care-nine-indol.vercel.app/api/account/user/", {
+        const { data } = await axios.get("https://health-care-nine-indol.vercel.app/api/auth/user/", {
             headers: { Authorization: `Token ${authToken}` },
         });
         console.log(data.role);

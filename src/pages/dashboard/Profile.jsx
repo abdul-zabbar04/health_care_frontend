@@ -3,19 +3,42 @@ import axios from "axios";
 
 const Profile = () => {
     const [userData, setUserData] = useState(null);
+    // const [UserRole, setUserRole] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
     const [isEditingPic, setIsEditingPic] = useState(false);
+    const [PatientACData, setPatientACData] = useState(null);
+    const [DoctorACData, setDoctorACData] = useState(null);
     const [formData, setFormData] = useState({
         first_name: "",
         last_name: "",
     });
+    const [DoctorForm, setDoctorForm] = useState({
+        BMDC_number: "",
+        degrees: "",
+        hospital_name: "",
+        experience: "",
+        biography: "",
+        meeting_link: ""
+    });
+    const [PatientForm, setPatientForm] = useState({
+        age: "",
+        gender: "",
+        height_ft: "",
+        height_in: "",
+        weight_kg: ""
+    });
     const [profileImage, setProfileImage] = useState(null);
     const [previewImage, setPreviewImage] = useState("");
 
-    const authToken = localStorage.getItem("authToken"); // Replace with actual token
+    const authToken = localStorage.getItem("authToken");
+    const UserRole = localStorage.getItem("userRole");
+    // setUserRole(role)
+    console.log(authToken);
     const API_URL = "https://health-care-nine-indol.vercel.app/api/auth/user/";
+    const patient_API = "https://health-care-nine-indol.vercel.app/api/account/patient-profile/";
+    const doctor_API = "https://health-care-nine-indol.vercel.app/api/account/doctor-profile/";
 
     // ImgBB API URL and key
     const IMGBB_API_URL = "https://api.imgbb.com/1/upload?key=6e856a08d1a2dc102e60c57e964312e5";
@@ -41,13 +64,64 @@ const Profile = () => {
                 setLoading(false);
             }
         };
-
         fetchUserProfile();
-    }, []);
+    }, [authToken]);
+    console.log(UserRole);
+
+    useEffect(() => {
+        const fetchRoleACData = async () => {
+            try {
+                const profileUrl = UserRole === "patient" ? patient_API : doctor_API;
+                console.log(`Fetching data for role: ${UserRole}, API: ${profileUrl}`);
+
+                const response = await axios.get(profileUrl, {
+                    headers: { Authorization: `Token ${authToken}` },
+                });
+
+                console.log("Fetched Role-based Data:", response.data);
+                if (UserRole === "patient") {
+
+                    setPatientACData(response.data);
+                    setPatientForm({
+                        age: response.data.age,
+                        gender: response.data.gender,
+                        height_ft: response.data.height_ft,
+                        height_in: response.data.height_in,
+                        weight_kg: response.data.weight_kg,
+                    });
+                }
+                else if (UserRole === "doctor") {
+                    setDoctorACData(response.data);
+                    setDoctorForm({
+                        BMDC_number: response.data.BMDC_number,
+                        degrees: response.data.degrees,
+                        hospital_name: response.data.hospital_name,
+                        experience: response.data.experience,
+                        biography: response.data.biography,
+                        meeting_link: response.data.meeting_link
+                    })
+                }
+            } catch (error) {
+                console.error("Failed to fetch role-based info:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchRoleACData();
+    }, [authToken])
 
     // Handle text input changes
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+    // patient form change
+    const PatientChange = (e) => {
+        setPatientForm({ ...PatientForm, [e.target.name]: e.target.value });
+    };
+    // doctor form change
+    const DoctorChange = (e) => {
+        setPatientForm({ ...DoctorForm, [e.target.name]: e.target.value });
     };
 
     // Handle profile picture change and upload to ImgBB
@@ -77,6 +151,25 @@ const Profile = () => {
     // Handle profile update (PUT request using FormData)
     const handleUpdateProfile = async () => {
         const updatedFormData = new FormData();
+        const updatedPatientForm = new FormData(); // for patient update
+        const updatedDoctorForm = new FormData();
+
+        if (UserRole === "patient") {
+            // for patient update
+            updatedPatientForm.append("age", PatientForm.age);
+            updatedPatientForm.append("gender", PatientForm.gender);
+            updatedPatientForm.append("height_ft", PatientForm.height_ft);
+            updatedPatientForm.append("height_in", PatientForm.height_in);
+            updatedPatientForm.append("weight_kg", PatientForm.weight_kg);
+        }
+        else if (UserRole === "doctor") {
+            updatedDoctorForm.append("BMDC_number", DoctorForm.BMDC_number);
+            updatedDoctorForm.append("degrees", DoctorForm.degrees);
+            updatedDoctorForm.append("hospital_name", DoctorForm.hospital_name);
+            updatedDoctorForm.append("experience", DoctorForm.experience);
+            updatedDoctorForm.append("biography", DoctorForm.biography);
+            updatedDoctorForm.append("meeting_link", DoctorForm.meeting_link);
+        }
 
         // Ensure required fields are included
         updatedFormData.append("username", userData.username);
@@ -98,6 +191,24 @@ const Profile = () => {
                     "Content-Type": "multipart/form-data",
                 },
             });
+            if (UserRole === "patient") {
+                console.log(patient_API);
+                const response2 = await axios.put(patient_API, updatedPatientForm, {
+                    headers: {
+                        Authorization: `Token ${authToken}`,
+                    },
+                });
+                setPatientACData(response2.data) // update state with new patient data
+            }
+            else if (UserRole === "doctor") {
+                console.log(doctor_API);
+                const response2 = await axios.put(doctor_API, updatedDoctorForm, {
+                    headers: {
+                        Authorization: `Token ${authToken}`,
+                    },
+                });
+                setDoctorACData(response2.data) // update state with new doctor data
+            }
 
             setUserData(response.data); // Update state with new data
             setIsEditing(false);
@@ -121,6 +232,7 @@ const Profile = () => {
                 },
             });
             localStorage.removeItem("authToken");
+            localStorage.removeItem("userRole");
             alert("Account deleted successfully.");
             setUserData(null);
         } catch (err) {
@@ -129,7 +241,9 @@ const Profile = () => {
     };
 
     if (loading) {
-        return <div>Loading...</div>;
+        return <div className="flex justify-center items-center h-[50vh]">
+            <span className="loading loading-spinner loading-md"></span>
+        </div>;
     }
 
     if (error) {
@@ -184,10 +298,9 @@ const Profile = () => {
                     )}
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 mt-4">
-                    <div>
-                        <h3 className="text-purple-700 font-semibold">Personal Profile</h3>
-                        <p><span className="font-medium">Username:</span> {userData?.username}</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                    <div className="space-y-2">
+                        <h3 className="text-purple-700 font-semibold">Personal Information</h3>
                         <p><span className="font-medium">Email:</span> {userData?.email}</p>
                         <p><span className="font-medium">Role:</span> {userData?.role}</p>
 
@@ -217,8 +330,158 @@ const Profile = () => {
                             </>
                         )}
                     </div>
+                    {/* role based info start from here */}
+                    <div>
+                        {isEditing ? (
+                            UserRole === "patient" ? (
+                                <>
+                                    <input
+                                        type="text"
+                                        name="age"
+                                        value={PatientForm.age}
+                                        onChange={PatientChange}
+                                        className="w-full p-2 border rounded"
+                                        placeholder="Age"
+                                    />
+                                    <select
+                                        name="gender"
+                                        value={PatientForm.gender}
+                                        onChange={PatientChange}
+                                        className="w-full p-2 border rounded mt-2"
+                                    >
+                                        <option value="">Select Gender</option>
+                                        <option value="male">Male</option>
+                                        <option value="female">Female</option>
+                                    </select>
+                                    <select
+                                        name="height_ft"
+                                        value={PatientForm.height_ft}
+                                        onChange={PatientChange}
+                                        className="w-full p-2 border rounded mt-2"
+                                    >
+                                        <option value="">Height(Feet only)</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                    </select>
+                                    <select
+                                        name="height_in"
+                                        value={PatientForm.height_in}
+                                        onChange={PatientChange}
+                                        className="w-full p-2 border rounded mt-2"
+                                    >
+                                        <option value="">Height(Inch only)</option>
+                                        <option value="0">0</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                    </select>
+                                    <input
+                                        type="text"
+                                        name="weight_kg"
+                                        value={PatientForm.weight_kg}
+                                        onChange={PatientChange}
+                                        className="w-full p-2 border rounded"
+                                        placeholder="Weight(kg)"
+                                    />
+                                </>
+                            ) : UserRole === "doctor" ? (
+                                <>
+                                    <div className="space-y-2">
+                                        <input
+                                            type="text"
+                                            name="BMDC_number"
+                                            value={DoctorForm.BMDC_number}
+                                            onChange={DoctorChange}
+                                            className="w-full p-2 border rounded"
+                                            placeholder="BMDC Number"
+                                        />
+                                        <input
+                                            type="text"
+                                            name="degrees"
+                                            value={DoctorForm.degrees}
+                                            onChange={DoctorChange}
+                                            className="w-full p-2 border rounded"
+                                            placeholder="Degrees"
+                                        />
+                                        <input
+                                            type="text"
+                                            name="hospital_name"
+                                            value={DoctorForm.hospital_name}
+                                            onChange={DoctorChange}
+                                            className="w-full p-2 border rounded"
+                                            placeholder="Hospital Name"
+                                        />
+                                        <input
+                                            type="number"
+                                            name="experience"
+                                            value={DoctorForm.experience}
+                                            onChange={DoctorChange}
+                                            className="w-full p-2 border rounded"
+                                            min="0" max="100"
+                                            placeholder="Experience"
+                                        />
+                                        <input
+                                            type="text"
+                                            name="biography"
+                                            value={DoctorForm.biography}
+                                            onChange={DoctorChange}
+                                            className="w-full p-2 border rounded"
+                                            placeholder="Biography"
+                                        />
+                                        <input
+                                            type="url"
+                                            name="meeting_link"
+                                            value={DoctorForm.meeting_link}
+                                            pattern="https:\/\/(meet\.google\.com\/[a-zA-Z0-9-]+|us02web\.zoom\.us\/j\/[0-9]+)"
+                                            placeholder="Enter Zoom or Google Meet link"
+                                            onChange={(e) => setDoctorForm({ ...DoctorForm, meeting_link: e.target.value })}
+                                            required
+                                            title="Please enter a valid Google Meet or Zoom meeting link."
+                                            className="w-full p-2 border rounded"
+                                        /><br></br>
+                                        <small>Only Google Meet or Zoom links are allowed.</small>
+                                    </div>
+                                </>
+                            ) : null
+                        ) : UserRole === "patient" ? (
+                            <>
+                                <div className="space-y-2">
+                                    <h3 className="text-purple-700 font-semibold">{userData?.role.charAt(0).toUpperCase() + userData?.role.slice(1)} Information</h3>
+                                    <p><span className="font-medium">Age:</span> {PatientACData?.age}</p>
+                                    <p><span className="font-medium">Gender:</span> {PatientACData?.gender.charAt(0).toUpperCase() + PatientACData?.gender.slice(1)}</p>
+                                    <p><span className="font-medium">Height:</span> {PatientACData?.height_ft} feet {PatientACData?.height_in} inch</p>
+                                    <p><span className="font-medium">Weight:</span> {PatientACData?.weight_kg} kg</p>
+                                </div>
+                            </>
+                        ) : UserRole === "doctor" ? (
+                            <>
+                                <div className="space-y-2">
+                                    <h3 className="text-purple-700 font-semibold">{userData?.role.charAt(0).toUpperCase() + userData?.role.slice(1)} Information</h3>
+                                    <p><span className="font-medium">BMDC Number:</span> {DoctorACData?.BMDC_number}</p>
+                                    <p><span className="font-medium">Degrees:</span> {DoctorACData?.degrees}</p>
+                                    <p><span className="font-medium">Specialization:</span> {DoctorACData?.specialization?.name}</p>
+                                    <p><span className="font-medium">Hospital Name:</span> {DoctorACData?.hospital_name}</p>
+                                    <p><span className="font-medium">Experience:</span> {DoctorACData?.experience}</p>
+                                    <p><span className="font-medium">Meet link:</span> {DoctorACData?.meeting_link}</p>
+                                </div>
+                            </>
+                        ) :
+                            null
+                        }
+                    </div>
                 </div>
-
                 <div className="mt-4 flex space-x-3">
                     {isEditing ? (
                         <>
@@ -243,7 +506,6 @@ const Profile = () => {
                             Edit Profile
                         </button>
                     )}
-
                     <button
                         onClick={handleDeleteAccount}
                         className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
@@ -251,6 +513,7 @@ const Profile = () => {
                         Delete Account
                     </button>
                 </div>
+
             </div>
         </div>
     );

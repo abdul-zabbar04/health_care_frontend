@@ -18,12 +18,18 @@ const Login = () => {
                 "https://health-care-nine-indol.vercel.app/api/auth/login/",
                 data
             );
+            // **Save the token in local storage**
+            const authToken= response.data.key;
+            localStorage.setItem("authToken", response.data.key); // Adjust the key if your API uses a different name
+            const userResponse = await axios.get("https://health-care-nine-indol.vercel.app/api/auth/user/", {
+                headers: { Authorization: `Token ${authToken}` },
+            });
+    
+            const userRole = userResponse.data.role; // Extract role from user data
+            console.log(userRole);
+            localStorage.setItem("userRole", userRole);
             alert("Login successful!");
             console.log(response.data);
-
-            // **Save the token in local storage**
-            localStorage.setItem("authToken", response.data.key); // Adjust the key if your API uses a different name
-
             // **Redirect to the dashboard**
             navigate('/dashboard');  // Redirect to the dashboard page
         } catch (error) {

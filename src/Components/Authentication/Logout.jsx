@@ -20,6 +20,7 @@ const Logout = () => {
 
                 // Remove token from local storage
                 localStorage.removeItem("authToken");
+                localStorage.removeItem("userRole");
 
                 alert("Logged out successfully!");
                 navigate("/login"); // Redirect to home page after logout

@@ -16,6 +16,7 @@ import Profile from './pages/dashboard/Profile.jsx'
 import Logout from './Components/Authentication/Logout.jsx'
 import PatientSignup from './Components/Authentication/PatientSignup.jsx'
 import DoctorSignup from './Components/Authentication/DoctorSignup.jsx'
+import DoctorDetails from './pages/doctor_details/DoctorDetails.jsx'
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
@@ -24,6 +25,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/" element={<Home></Home>} />
         <Route path="/guide" element={<StepsGuide></StepsGuide>} />
         <Route path="/find-doctor" element={<Doctors_view></Doctors_view>} />
+        <Route path="/doctor/:id" element={<DoctorDetails></DoctorDetails>} />
         <Route path="/about-us" element={<About></About>} />
         <Route path="/contact-us" element={<Contact></Contact>} />
         <Route path="/dashboard" element={<Dashboard></Dashboard>} />

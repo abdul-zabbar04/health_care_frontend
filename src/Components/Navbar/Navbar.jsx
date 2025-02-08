@@ -83,7 +83,7 @@ const Navbar = () => {
                 className="h-10 w-14 rounded-full cursor-pointer"
                 onClick={toggleProfile}
               /> */}
-              <span className="btn btn-primary btn-xs" onClick={toggleProfile}>Profile</span>
+              <span className="btn btn-primary px-1" onClick={toggleProfile}>Profile</span>
               {isProfileOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-base-100 shadow-lg rounded-md py-2">
                   <Link
