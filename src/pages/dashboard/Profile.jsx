@@ -121,7 +121,7 @@ const Profile = () => {
     };
     // doctor form change
     const DoctorChange = (e) => {
-        setPatientForm({ ...DoctorForm, [e.target.name]: e.target.value });
+        setDoctorForm({ ...DoctorForm, [e.target.name]: e.target.value });
     };
 
     // Handle profile picture change and upload to ImgBB
