@@ -77,7 +77,6 @@ const Profile = () => {
                 const response = await axios.get(profileUrl, {
                     headers: { Authorization: `Token ${authToken}` },
                 });
-
                 console.log("Fetched Role-based Data:", response.data);
                 if (UserRole === "patient") {
 
@@ -471,7 +470,7 @@ const Profile = () => {
                                     <h3 className="text-purple-700 font-semibold">{userData?.role.charAt(0).toUpperCase() + userData?.role.slice(1)} Information</h3>
                                     <p><span className="font-medium">BMDC Number:</span> {DoctorACData?.BMDC_number}</p>
                                     <p><span className="font-medium">Degrees:</span> {DoctorACData?.degrees}</p>
-                                    <p><span className="font-medium">Specialization:</span> {DoctorACData?.specialization?.name}</p>
+                                    <p><span className="font-medium">Specialization:</span> {DoctorACData?.specialization_name}</p>
                                     <p><span className="font-medium">Hospital Name:</span> {DoctorACData?.hospital_name}</p>
                                     <p><span className="font-medium">Experience:</span> {DoctorACData?.experience}</p>
                                     <p><span className="font-medium">Meet link:</span> {DoctorACData?.meeting_link}</p>
