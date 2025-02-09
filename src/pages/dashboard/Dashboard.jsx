@@ -25,6 +25,14 @@ const Dashboard = () => {
                         : "https://health-care-nine-indol.vercel.app/api/account/doctor-profile/";
 
                 const roleACData= await axios.get(profileUrl, { headers: { Authorization: `Token ${authToken}` } });
+                const dashboard_data_api= userType === "patient"
+                ? "https://health-care-nine-indol.vercel.app/api/doctor/appointments/"
+                : "https://health-care-nine-indol.vercel.app/api/doctor/appointments/doctor/";
+                console.log(dashboard_data_api);
+                const dashboardData= await axios.get(dashboard_data_api, {
+                    headers: { Authorization: `Token ${authToken}` }
+                });
+                console.log(dashboardData);
                 console.log(roleACData);
 
                 setProfileCompleted(true);
