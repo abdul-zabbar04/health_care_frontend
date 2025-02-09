@@ -1,12 +1,15 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
+import { useNavigate } from 'react-router';
 
 const PatientSignup = () => {
+  const navigate= useNavigate();
   const authToken = localStorage.getItem('authToken'); // Getting the token from localStorage
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm();
 
@@ -26,6 +29,9 @@ const PatientSignup = () => {
       );
       console.log(response.data);  // Success response
       alert('Registration successful!');
+      reset();
+      navigate('/view-profile'); 
+      
     } catch (error) {
       console.error(error.response?.data || 'Something went wrong');
       alert(error.response?.data?.detail || 'An error occurred during registration. Please try again.');

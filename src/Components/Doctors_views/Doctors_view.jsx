@@ -53,9 +53,9 @@ const DoctorsView = () => {
                                 <p className="text-xl font-semibold text-purple-600">৳ {doctor.fee}</p>
                                 <p className="text-sm text-gray-600 mt-2"><span>BMDC Number: </span>{doctor.BMDC_number}</p>
                                 <div className="mt-4 flex justify-between items-center">
-                                    <button className="bg-purple-500 text-white py-2 px-4 rounded-lg shadow hover:bg-purple-600">
+                                    <Link to={`/appointment/${doctor.id}`} className="bg-purple-500 text-white py-2 px-4 rounded-lg shadow hover:bg-purple-600">
                                         Book Now
-                                    </button>
+                                    </Link>
                                     <Link to={`/doctor/${doctor.id}`} className="text-purple-500 font-medium hover:underline">
                                         View Details
                                     </Link>

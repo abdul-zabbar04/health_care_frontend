@@ -63,7 +63,7 @@ const Login = () => {
                                                   message: "Enter a valid email address",
                                                 },
                                               })}
-                                            autoComplete="off"
+                                            autoComplete="on"
                                             id="email"
                                             name="email"
                                             type="text"

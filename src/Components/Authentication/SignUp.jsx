@@ -4,17 +4,17 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 
 const SignUp = () => {
-  const navigate= useNavigate();
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
     watch,
+    reset, // Highlighted addition
     formState: { errors },
   } = useForm();
 
   const password1 = watch("password1");
-  // const role = watch("role");
-  // const onSubmit = (data) => console.log(data);
+  
   const onSubmit = async (data) => {
     try {
       const response = await axios.post(
@@ -22,13 +22,12 @@ const SignUp = () => {
         data
       );
       alert("Registration successful! Check your Email to verify");
-      // console.log(role, "this is role");
-      // if(role==='patient'){
-      //   navigate('/patient-register');
-      // }
-      // if(role==='doctor'){
-      //   navigate('/contact-us');
-      // }
+
+      // Reset the form after successful submission (Highlighted addition)
+      reset();
+
+      // You can navigate to a different page or take further actions here
+      // navigate("/some-other-page");
     } catch (error) {
       console.error(error.response?.data || "Something went wrong");
       alert(
@@ -174,9 +173,6 @@ const SignUp = () => {
                 />
                 <label htmlFor="terms" className="ml-2 text-sm text-gray-900 dark:text-white">
                   I accept the{" "}
-                  {/* <a href="#" className="font-medium text-primary-600 hover:underline">
-                    
-                  </a> */}
                   <label className="cursor-pointer font-medium text-primary-600 hover:underline" htmlFor="my_modal_6">Terms and Conditions</label>
                 </label>
               </div>
@@ -203,15 +199,15 @@ const SignUp = () => {
         </div>
       </div>
       <input type="checkbox" id="my_modal_6" className="modal-toggle" />
-<div className="modal" role="dialog">
-  <div className="modal-box">
-    <h3 className="text-lg font-bold">Hello!</h3>
-    <p className="py-4">This modal works with a hidden checkbox!</p>
-    <div className="modal-action">
-      <label htmlFor="my_modal_6" className="btn">Close!</label>
-    </div>
-  </div>
-</div>
+      <div className="modal" role="dialog">
+        <div className="modal-box">
+          <h3 className="text-lg font-bold">Hello!</h3>
+          <p className="py-4">This modal works with a hidden checkbox!</p>
+          <div className="modal-action">
+            <label htmlFor="my_modal_6" className="btn">Close!</label>
+          </div>
+        </div>
+      </div>
     </section>
   );
 };
