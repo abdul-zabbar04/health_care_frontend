@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 const Dashboard = () => {
-    const navigate= useNavigate();
+    const navigate = useNavigate();
     const [profileCompleted, setProfileCompleted] = useState(null);
+    const [appointments, setAppointments] = useState([]);
     const [userType, setUserType] = useState(null);
     const authToken = localStorage.getItem("authToken");
 
@@ -24,24 +25,42 @@ const Dashboard = () => {
                         ? "https://health-care-nine-indol.vercel.app/api/account/patient-profile/"
                         : "https://health-care-nine-indol.vercel.app/api/account/doctor-profile/";
 
-                const roleACData= await axios.get(profileUrl, { headers: { Authorization: `Token ${authToken}` } });
-                const dashboard_data_api= userType === "patient"
-                ? "https://health-care-nine-indol.vercel.app/api/doctor/appointments/api/doctor/appointments/"
-                : "https://health-care-nine-indol.vercel.app/api/doctor/appointments/doctor/";
-                console.log(dashboard_data_api);
-                const dashboardData= await axios.get(dashboard_data_api, {
-                    headers: { Authorization: `Token ${authToken}` }
-                });
-                console.log(dashboardData);
-                console.log(roleACData);
+                const roleACData = await axios.get(profileUrl, { headers: { Authorization: `Token ${authToken}` } });
 
                 setProfileCompleted(true);
             } catch (error) {
                 setProfileCompleted(false);
             }
         };
+        const fetchDashboardData = async () => {
+            try {
+                // Fetch the user type to determine the dashboard data URL
+                const userType = await getUserType(authToken);
+
+                // Determine the dashboard data URL based on user type
+                const dashboardDataApi =
+                    userType === "patient"
+                        ? "https://health-care-nine-indol.vercel.app/api/doctor/appointments/"
+                        : "https://health-care-nine-indol.vercel.app/api/doctor/appointments/doctor/";
+
+                console.log(dashboardDataApi);
+
+                // Fetch dashboard data
+                const dashboardData = await axios.get(dashboardDataApi, {
+                    headers: { Authorization: `Token ${authToken}` }
+                });
+
+                console.log(dashboardData);
+                setAppointments(dashboardData.data);
+
+            } catch (error) {
+                // Log error details to help with debugging
+                console.error('Error fetching dashboard data:', error);
+            }
+        };
 
         fetchUserData();
+        fetchDashboardData();
     }, [authToken]);
 
     if (profileCompleted === null) return <div className="text-center my-10 text-gray-600">Loading...</div>;
@@ -54,14 +73,14 @@ const Dashboard = () => {
                 </h1>
                 <button
                     className="btn btn-primary mt-4"
-                    onClick={()=>navigate(userType === "patient" ? "/patient-register" : "/doctor-register")}
+                    onClick={() => navigate(userType === "patient" ? "/patient-register" : "/doctor-register")}
                 >
                     Complete Registration
                 </button>
             </div>
         );
 
-    return userType === "patient" ? <PatientDashboard /> : <DoctorDashboard />;
+    return userType === "patient" ? <PatientDashboard appointments={appointments} /> : <DoctorDashboard />;
 };
 
 // Separate function to get role
@@ -78,68 +97,94 @@ const getUserType = async (authToken) => {
     }
 };
 
-const PatientDashboard = () => (
-    <div className="text-center my-10">
-        {/* <h1 className="text-2xl sm:text-3xl font-bold text-gray-700">Patient Dashboard</h1> */}
-
+const PatientDashboard = ({ appointments }) => {
+    return (
         <div className="text-center my-10">
+            <div className="text-center my-10">
                 <h5 className="text-2xl sm:text-2xl md:text-3xl lg:text-3xl font-bold text-gray-650 leading-tight">
                     Your Appointments
                 </h5>
             </div>
-            <div className="filter text-center my-8">
-                <input className="btn filter-reset" type="radio" name="metaframeworks" aria-label="All" />
-                <input className="btn" type="radio" name="metaframeworks" aria-label="Pending" />
-                <input className="btn" type="radio" name="metaframeworks" aria-label="Confirmed" />
-                <input className="btn" type="radio" name="metaframeworks" aria-label="Completed" />
-                <input className="btn" type="radio" name="metaframeworks" aria-label="Cancelled" />
-            </div>
+
             <div className="p-6">
                 <div className="overflow-x-auto">
                     <table className="min-w-full border border-gray-200 divide-y divide-gray-200">
                         <thead className="bg-gray-100">
                             <tr>
-                                <th className="px-4 py-3 text-left text-sm font-semibold text-gray-600">No</th>
-                                <th className="px-4 py-3 text-left text-sm font-semibold text-gray-600">Doctor Name</th>
-                                <th className="px-4 py-3 text-left text-sm font-semibold text-gray-600">
-                                    Appointment Created
+                                <th className="px-4 py-3 text-center text-sm font-semibold text-gray-600">No</th>
+                                <th className="px-4 py-3 text-center text-sm font-semibold text-gray-600">Doctor Name</th>
+                                <th className="px-4 py-3 text-center text-sm font-semibold text-gray-600">
+                                    Reason
                                 </th>
-                                <th className="px-4 py-3 text-left text-sm font-semibold text-gray-600">
+                                <th className="px-4 py-3 text-center text-sm font-semibold text-gray-600">
                                     Schedule Start
                                 </th>
-                                <th className="px-4 py-3 text-left text-sm font-semibold text-gray-600">
+                                <th className="px-4 py-3 text-center text-sm font-semibold text-gray-600">
                                     Appointment Status
                                 </th>
-                                <th className="px-4 py-3 text-left text-sm font-semibold text-gray-600">Action</th>
+                                <th className="px-4 py-3 text-center text-sm font-semibold text-gray-600">Action</th>
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
-                            <tr>
-                                <td className="px-4 py-3 text-sm text-gray-800">1</td>
-                                <td className="px-4 py-3 flex items-center space-x-2 text-sm text-gray-800">
-                                    <span className="text-purple-600">
-                                        <button className="btn btn-xs">View</button>
-                                    </span>
-                                    <span>Dr. Taposhi Akter</span>
-                                </td>
-                                <td className="px-4 py-3 text-sm text-gray-800">2025-01-29 7:25 AM</td>
-                                <td className="px-4 py-3 text-sm text-gray-800">2025-02-01 9:00 AM</td>
-                                <td className="px-4 py-3">
-                                    <span className="px-3 py-1 text-xs font-medium text-pink-700 bg-pink-100 rounded-full">
-                                        Pending
-                                    </span>
-                                </td>
-                                <td className="px-4 py-3">
-                                    <button className="btn btn-success btn-xs mx-1">Pay</button>
-                                    <button className="btn btn-error btn-xs mx-1">Delete</button>
-                                </td>
-                            </tr>
+                            {appointments.length === 0 ? (
+                                <tr>
+                                    <td colSpan="6" className="text-center py-4 text-gray-500">
+                                        No appointments available.
+                                    </td>
+                                </tr>
+                            ) : (
+                                appointments.map((appointment, index) => (
+                                    <tr key={appointment.id}>
+                                        <td className="px-4 py-3 text-sm text-gray-800">{index + 1}</td>
+                                        <td className="px-4 py-3 flex items-center space-x-2 text-sm text-gray-800">
+                                            <span className="text-purple-600">
+                                                {appointment.meeting_link ? (
+                                                    <Link to={appointment.meeting_link} className="btn btn-xs">
+                                                        Meet
+                                                    </Link>
+                                                ) : (
+                                                    <span className="btn btn-xs disabled">No Meeting Link</span>
+                                                )}
+                                            </span>
+                                            <span>{appointment.doctor_name}</span>
+                                        </td>
+                                        <td className="px-4 py-3 text-sm text-gray-800">
+                                            {appointment.reason}
+                                        </td>
+                                        <td className="px-4 py-3 text-sm text-gray-800">
+                                            {`${appointment.appointment_date} ${appointment.appointment_time}`}
+                                        </td>
+                                        <td className="px-4 py-3">
+                                            <span
+                                                className={`px-3 py-1 text-xs font-medium rounded-full ${appointment.status === "Pending"
+                                                        ? "text-pink-700 bg-pink-100"
+                                                        : appointment.status === "Confirmed"
+                                                            ? "text-green-700 bg-green-100"
+                                                            : "text-gray-700 bg-gray-100"
+                                                    }`}
+                                            >
+                                                {appointment.status}
+                                            </span>
+                                        </td>
+                                        <td className="px-4 py-3">
+                                            <button
+                                                className={`btn btn-xs mx-1 ${appointment.is_paid ? "btn-success" : "btn-warning"
+                                                    }`}
+                                            >
+                                                {appointment.is_paid ? "Paid" : "Pay"}
+                                            </button>
+                                            <button className="btn btn-error btn-xs mx-1">Delete</button>
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
                         </tbody>
                     </table>
                 </div>
             </div>
-    </div>
-);
+        </div>
+    );
+};
 
 const DoctorDashboard = () => (
     <div className="text-center my-10">
