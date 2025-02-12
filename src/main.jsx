@@ -18,6 +18,9 @@ import PatientSignup from './Components/Authentication/PatientSignup.jsx'
 import DoctorDetails from './pages/doctor_details/DoctorDetails.jsx'
 import Appointment from './Components/Appointment/Appointment.jsx'
 import DoctorSignup from './Components/Authentication/DoctorSignup.jsx'
+import Checkout from './pages/checkout/Checkout.jsx'
+import SuccessPayment from './pages/checkout/SuccessPayment.jsx'
+import FailedPayment from './pages/checkout/FailedPayment.jsx'
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
@@ -40,6 +43,10 @@ createRoot(document.getElementById('root')).render(
       <Route path="/login" element={<Login/>} />
       <Route path="/signup" element={<Signup/>} />
       <Route path="/logout" element={<Logout></Logout>} />
+      {/* payment routes */}
+      <Route path="/checkout/:id" element={<Checkout></Checkout>}/>
+      <Route path="/payment-success/:id" element={<SuccessPayment/>} />
+      <Route path="/payment-fail/" element={<FailedPayment/>} />
     </Routes>
   </BrowserRouter>,
 );

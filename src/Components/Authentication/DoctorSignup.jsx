@@ -7,6 +7,7 @@ const DoctorSignup = () => {
   const navigate = useNavigate();
   const authToken = localStorage.getItem('authToken');
   const [specializations, setSpecializations] = useState([]);
+  const [health_concerns, setHealth_concerns] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -30,7 +31,20 @@ const DoctorSignup = () => {
         setLoading(false);
       }
     };
+    const fetchHealthConcerns = async () => {
+      try {
+        const response = await axios.get(
+          'https://health-care-nine-indol.vercel.app/api/filter/health_concern/'
+        );
+        setHealth_concerns(response.data);
+      } catch (error) {
+        setError('Failed to load health_concerns');
+      } finally {
+        setLoading(false);
+      }
+    };
     fetchSpecializations();
+    fetchHealthConcerns();
   }, []);
 
   const onSubmit = async (data) => {
@@ -41,6 +55,7 @@ const DoctorSignup = () => {
         {
           ...data,
           specialization: parseInt(data.specialization, 10),
+          health_concern: data.health_concern ? parseInt(data.health_concern, 10) : null,
         },
         {
           headers: {
@@ -77,6 +92,18 @@ const DoctorSignup = () => {
             />
             {errors.BMDC_number && <p className="text-red-500 text-sm">{errors.BMDC_number.message}</p>}
           </div>
+          <div>
+            <label className="block text-gray-700 font-medium" htmlFor="fee">
+              Fee
+            </label>
+            <input
+              {...register('fee', { required: 'Fee is required' })}
+              type="number"
+              className="w-full border rounded p-2"
+              placeholder="Enter your fee"
+            />
+            {errors.fee && <p className="text-red-500 text-sm">{errors.fee.message}</p>}
+          </div>
 
           <div>
             <label className="block text-gray-700 font-medium" htmlFor="degrees">
@@ -89,6 +116,26 @@ const DoctorSignup = () => {
               placeholder="Enter your degrees"
             />
             {errors.degrees && <p className="text-red-500 text-sm">{errors.degrees.message}</p>}
+          </div>
+
+          <div>
+            <label className="block text-gray-700 font-medium" htmlFor="health_concern">
+              Health Concern
+            </label>
+            <select
+              {...register('health_concern', { required: 'Health Concern is required' })}
+              className="w-full border rounded p-2"
+            >
+              <option value="">Select Health Concern</option>
+              {loading && <option>Loading...</option>}
+              {error && <option>{error}</option>}
+              {health_concerns.map((health_con) => (
+                <option key={health_con.id} value={health_con.id}>
+                  {health_con.name}
+                </option>
+              ))}
+            </select>
+            {errors.health_concern && <p className="text-red-500 text-sm">{errors.health_concern.message}</p>}
           </div>
 
           <div>

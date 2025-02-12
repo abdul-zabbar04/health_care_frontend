@@ -4,14 +4,15 @@ import CommonHealthConcern from '../../Components/Categories/CommonHealthConcern
 import Specialist from '../../Components/Specialist/Specialist'
 import Doctors_view from '../../Components/Doctors_views/Doctors_view'
 import StepsGuide from '../../Components/StepGuide/StepsGuide'
-
+import SpecialistAndHealthConcern from '../../Components/Categories/CommonHealthConcern';
 const Home = () => {
     return (
         <div>
             <Hero></Hero> 
-            <CommonHealthConcern></CommonHealthConcern>
-            <Specialist></Specialist>
-            <Doctors_view></Doctors_view>
+            {/* <CommonHealthConcern></CommonHealthConcern>
+            <Specialist></Specialist> */}
+            <SpecialistAndHealthConcern/>
+            {/* <Doctors_view></Doctors_view> */}
             <StepsGuide></StepsGuide>
         </div>
     );

@@ -17,6 +17,7 @@ const Profile = () => {
     const [DoctorForm, setDoctorForm] = useState({
         BMDC_number: "",
         degrees: "",
+        fee:"",
         hospital_name: "",
         experience: "",
         biography: "",
@@ -94,6 +95,7 @@ const Profile = () => {
                     setDoctorForm({
                         BMDC_number: response.data.BMDC_number,
                         degrees: response.data.degrees,
+                        fee: response.data.fee,
                         hospital_name: response.data.hospital_name,
                         experience: response.data.experience,
                         biography: response.data.biography,
@@ -162,8 +164,10 @@ const Profile = () => {
             updatedPatientForm.append("weight_kg", PatientForm.weight_kg);
         }
         else if (UserRole === "doctor") {
+            updatedDoctorForm.append("specialization", DoctorACData.specialization);
             updatedDoctorForm.append("BMDC_number", DoctorForm.BMDC_number);
             updatedDoctorForm.append("degrees", DoctorForm.degrees);
+            updatedDoctorForm.append("fee", DoctorForm.fee);
             updatedDoctorForm.append("hospital_name", DoctorForm.hospital_name);
             updatedDoctorForm.append("experience", DoctorForm.experience);
             updatedDoctorForm.append("biography", DoctorForm.biography);
@@ -415,6 +419,14 @@ const Profile = () => {
                                             placeholder="Degrees"
                                         />
                                         <input
+                                            type="number"
+                                            name="fee"
+                                            value={DoctorForm.fee}
+                                            onChange={DoctorChange}
+                                            className="w-full p-2 border rounded"
+                                            placeholder="Fee"
+                                        />
+                                        <input
                                             type="text"
                                             name="hospital_name"
                                             value={DoctorForm.hospital_name}
@@ -470,6 +482,7 @@ const Profile = () => {
                                     <h3 className="text-purple-700 font-semibold">{userData?.role.charAt(0).toUpperCase() + userData?.role.slice(1)} Information</h3>
                                     <p><span className="font-medium">BMDC Number:</span> {DoctorACData?.BMDC_number}</p>
                                     <p><span className="font-medium">Degrees:</span> {DoctorACData?.degrees}</p>
+                                    <p><span className="font-medium">Fee:</span> {DoctorACData?.fee} tk</p>
                                     <p><span className="font-medium">Specialization:</span> {DoctorACData?.specialization_name}</p>
                                     <p><span className="font-medium">Hospital Name:</span> {DoctorACData?.hospital_name}</p>
                                     <p><span className="font-medium">Experience:</span> {DoctorACData?.experience}</p>

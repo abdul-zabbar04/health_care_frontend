@@ -80,7 +80,7 @@ const Dashboard = () => {
             </div>
         );
 
-    return userType === "patient" ? <PatientDashboard appointments={appointments} /> : <DoctorDashboard />;
+    return userType === "patient" ? <PatientDashboard appointments={appointments} /> : <DoctorDashboard appointments={appointments} />;
 };
 
 // Separate function to get role
@@ -138,12 +138,12 @@ const PatientDashboard = ({ appointments }) => {
                                         <td className="px-4 py-3 text-sm text-gray-800">{index + 1}</td>
                                         <td className="px-4 py-3 flex items-center space-x-2 text-sm text-gray-800">
                                             <span className="text-purple-600">
-                                                {appointment.meeting_link ? (
-                                                    <Link to={appointment.meeting_link} className="btn btn-xs">
+                                                {appointment.is_paid ? (
+                                                    <Link target="_blank" to={appointment.meeting_link} className="btn btn-xs">
                                                         Meet
                                                     </Link>
                                                 ) : (
-                                                    <span className="btn btn-xs disabled">No Meeting Link</span>
+                                                    <span className="btn btn-xs disabled">Payment to get meet link</span>
                                                 )}
                                             </span>
                                             <span>{appointment.doctor_name}</span>
@@ -157,23 +157,26 @@ const PatientDashboard = ({ appointments }) => {
                                         <td className="px-4 py-3">
                                             <span
                                                 className={`px-3 py-1 text-xs font-medium rounded-full ${appointment.status === "Pending"
-                                                        ? "text-pink-700 bg-pink-100"
-                                                        : appointment.status === "Confirmed"
-                                                            ? "text-green-700 bg-green-100"
-                                                            : "text-gray-700 bg-gray-100"
+                                                    ? "text-pink-700 bg-pink-100"
+                                                    : appointment.status === "Confirmed"
+                                                        ? "text-green-700 bg-green-100"
+                                                        : "text-gray-700 bg-gray-100"
                                                     }`}
                                             >
                                                 {appointment.status}
                                             </span>
                                         </td>
                                         <td className="px-4 py-3">
-                                            <button
-                                                className={`btn btn-xs mx-1 ${appointment.is_paid ? "btn-success" : "btn-warning"
-                                                    }`}
+                                            <Link
+                                                to={appointment.is_paid ? "#" : `/checkout/${appointment.id}`}
+                                                className={`btn btn-xs mx-1 ${appointment.is_paid ? "btn-success opacity-50 pointer-events-none" : "btn-warning"}`}
+                                                tabIndex={appointment.is_paid ? "-1" : "0"}
                                             >
                                                 {appointment.is_paid ? "Paid" : "Pay"}
-                                            </button>
-                                            <button className="btn btn-error btn-xs mx-1">Delete</button>
+                                            </Link>
+                                            {!appointment.is_paid && (
+                                                <button className="btn btn-error btn-xs mx-1">Delete</button>
+                                            )}
                                         </td>
                                     </tr>
                                 ))
@@ -186,11 +189,93 @@ const PatientDashboard = ({ appointments }) => {
     );
 };
 
-const DoctorDashboard = () => (
-    <div className="text-center my-10">
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-700">Doctor Dashboard</h1>
-        <p>Show doctor-specific data here...</p>
-    </div>
-);
+const DoctorDashboard = ({ appointments }) => {
+    return (
+        <div className="text-center my-10">
+            <div className="text-center my-10">
+                <h5 className="text-2xl sm:text-2xl md:text-3xl lg:text-3xl font-bold text-gray-650 leading-tight">
+                    Your Appointments
+                </h5>
+            </div>
+
+            <div className="p-6">
+                <div className="overflow-x-auto">
+                    <table className="min-w-full border border-gray-200 divide-y divide-gray-200">
+                        <thead className="bg-gray-100">
+                            <tr>
+                                <th className="px-4 py-3 text-center text-sm font-semibold text-gray-600">No</th>
+                                <th className="px-4 py-3 text-center text-sm font-semibold text-gray-600">Patient Name</th>
+                                <th className="px-4 py-3 text-center text-sm font-semibold text-gray-600">
+                                    Reason
+                                </th>
+                                <th className="px-4 py-3 text-center text-sm font-semibold text-gray-600">
+                                    Schedule Start
+                                </th>
+                                <th className="px-4 py-3 text-center text-sm font-semibold text-gray-600">
+                                    Appointment Status
+                                </th>
+                                <th className="px-4 py-3 text-center text-sm font-semibold text-gray-600">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                            {appointments.length === 0 ? (
+                                <tr>
+                                    <td colSpan="6" className="text-center py-4 text-gray-500">
+                                        No appointments available.
+                                    </td>
+                                </tr>
+                            ) : (
+                                appointments.map((appointment, index) => (
+                                    <tr key={appointment.id}>
+                                        <td className="px-4 py-3 text-sm text-gray-800">{index + 1}</td>
+                                        <td className="px-4 py-3 flex items-center space-x-2 text-sm text-gray-800">
+                                            <span className="text-purple-600">
+                                                {appointment.meeting_link ? (
+                                                    <Link target="_blank" to={appointment.meeting_link} className="btn btn-xs">
+                                                        Meet
+                                                    </Link>
+                                                ) : (
+                                                    <span className="btn btn-xs disabled">No Meeting Link</span>
+                                                )}
+                                            </span>
+                                            <span>{appointment.patient_name}</span>
+                                        </td>
+                                        <td className="px-4 py-3 text-sm text-gray-800">
+                                            {appointment.reason}
+                                        </td>
+                                        <td className="px-4 py-3 text-sm text-gray-800">
+                                            {`${appointment.appointment_date} ${appointment.appointment_time}`}
+                                        </td>
+                                        <td className="px-4 py-3">
+                                            <span
+                                                className={`px-3 py-1 text-xs font-medium rounded-full ${appointment.status === "Pending"
+                                                    ? "text-pink-700 bg-pink-100"
+                                                    : appointment.status === "Confirmed"
+                                                        ? "text-green-700 bg-green-100"
+                                                        : "text-gray-700 bg-gray-100"
+                                                    }`}
+                                            >
+                                                {appointment.status}
+                                            </span>
+                                        </td>
+                                        <td className="px-4 py-3">
+                                            <button
+                                                className={`btn btn-xs mx-1 ${appointment.status === "Completed" ? "btn-success" : "btn-warning"
+                                                    }`}
+                                            >
+                                                {appointment.status === "Completed" ? "Completed" : "Complete"}
+                                            </button>
+
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    );
+};
 
 export default Dashboard;

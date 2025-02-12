@@ -2,22 +2,40 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router';
 
-const DoctorsView = () => {
+const DoctorsView = ({ specialization_id = null, health_concern_id = null }) => {
     const [doctors, setDoctors] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    // Log the received ids for debugging
+    console.log(specialization_id, "this is specialization id");
+    console.log(health_concern_id, "this is health concern id");
+
     useEffect(() => {
-        axios.get("https://health-care-nine-indol.vercel.app/api/doctor/list/")
+        setLoading(true); // Reset loading state
+
+        // Determine the API URL based on the available ID
+        let url = '';
+
+        if (specialization_id) {
+            url = `https://health-care-nine-indol.vercel.app/api/doctor/list/specialization/${specialization_id}/`;
+        } else if (health_concern_id) {
+            url = `https://health-care-nine-indol.vercel.app/api/doctor/list/health_concern/${health_concern_id}/`;
+        } else {
+            url = 'https://health-care-nine-indol.vercel.app/api/doctor/list/'; // Default API if neither id is provided
+        }
+
+        // Fetch doctors from the API
+        axios.get(url)
             .then(response => {
                 setDoctors(response.data);
-                setLoading(false);
+                setLoading(false); // Stop loading once data is fetched
             })
             .catch(error => {
                 console.error("Error fetching doctor list:", error);
-                setLoading(false);
+                setLoading(false); // Stop loading if there is an error
             });
-    }, []);
-    console.log(doctors);
+    }, [specialization_id, health_concern_id]); // Only run when either of these ids change
+
     return (
         <div>
             <div className="text-center my-10">
@@ -28,6 +46,7 @@ const DoctorsView = () => {
                     Consult with any doctor according to your need
                 </p>
             </div>
+
             {loading ? (
                 <div className="flex justify-center items-center h-[50vh]">
                     <span className="loading loading-spinner loading-md"></span>
@@ -66,9 +85,7 @@ const DoctorsView = () => {
                         <p className="text-center col-span-4 text-gray-500">No doctors available at the moment.</p>
                     )}
                 </div>
-            )
-            }
-
+            )}
         </div>
     );
 };

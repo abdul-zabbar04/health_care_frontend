@@ -44,7 +44,7 @@ const Navbar = () => {
       <nav className="flex items-center justify-between px-6 py-4">
         {/* Logo */}
         <Link to="/" className="text-2xl font-bold italic text-primary">
-          Smart Health Care
+          Health Care
         </Link>
 
         {/* Middle Navigation */}
@@ -72,7 +72,7 @@ const Navbar = () => {
           onClick={toggleTheme}
           className="block font-medium w-full text-left"
         >
-          {theme === "light" ? "Dark" : "Light"} Mode
+          {theme === "light" ? "Dark" : "Light"}
         </button>
           {/* Authenticated User */}
           {isAuthenticated ? (
