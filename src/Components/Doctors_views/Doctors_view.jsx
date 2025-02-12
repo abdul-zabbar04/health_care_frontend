@@ -52,7 +52,7 @@ const DoctorsView = ({ specialization_id = null, health_concern_id = null }) => 
                     <span className="loading loading-spinner loading-md"></span>
                 </div>
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 p-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-4">
                     {doctors.length > 0 ? (
                         doctors.map((doctor) => (
                             <div key={doctor.id} className="bg-white shadow-lg rounded-2xl p-4 border border-gray-200">
