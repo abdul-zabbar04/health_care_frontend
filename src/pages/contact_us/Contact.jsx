@@ -26,7 +26,7 @@ const Contact = () => {
         setResponseMessage(null);
 
         try {
-            const response = await axios.post("http://127.0.0.1:8000/api/contact/", formData);
+            const response = await axios.post("https://health-care-nine-indol.vercel.app/api/contact/", formData);
             
             if (response.status === 201) {
                 setResponseMessage("Your message has been sent successfully!");

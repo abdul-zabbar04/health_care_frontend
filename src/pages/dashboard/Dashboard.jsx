@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 
 const Dashboard = () => {
     const navigate = useNavigate();
@@ -190,6 +190,25 @@ const PatientDashboard = ({ appointments }) => {
 };
 
 const DoctorDashboard = ({ appointments }) => {
+    const authToken = localStorage.getItem("authToken");
+    // const { appointment_id } = useParams();
+    const completeAppointment = async (appointmentId) => {
+        try {
+            const response = await axios.post(
+                `https://health-care-nine-indol.vercel.app/api/doctor/appointments/doctor/${appointmentId}/`,
+                {},
+                {
+                    headers: {
+                        Authorization: `Token ${authToken}`,
+                    },
+                }
+            );
+            console.log('Appointment completed:', response.data);
+            // You may want to update the state here to reflect the appointment status change
+        } catch (error) {
+            console.error('Error completing the appointment:', error);
+        }
+    };
     return (
         <div className="text-center my-10">
             <div className="text-center my-10">
@@ -259,13 +278,14 @@ const DoctorDashboard = ({ appointments }) => {
                                             </span>
                                         </td>
                                         <td className="px-4 py-3">
-                                            <button
-                                                className={`btn btn-xs mx-1 ${appointment.status === "Completed" ? "btn-success" : "btn-warning"
-                                                    }`}
-                                            >
-                                                {appointment.status === "Completed" ? "Completed" : "Complete"}
-                                            </button>
-
+                                            {appointment.status !== "Completed" && (
+                                                <button
+                                                    className="btn btn-xs mx-1 btn-warning"
+                                                    onClick={() => completeAppointment(appointment.id)}  // Call the completeAppointment function
+                                                >
+                                                    Complete
+                                                </button>
+                                            )}
                                         </td>
                                     </tr>
                                 ))
