@@ -16,7 +16,7 @@ const Appointment = () => {
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                const response = await axios.get("https://smart-health-care-web.netlify.app/api/account/patient-profile/", {
+                const response = await axios.get("http://health-care-nine-indol.vercel.app/api/account/patient-profile/", {
                     headers: { Authorization: `Token ${authToken}` },
                 });
                 setPatientId(response.data.id); // Ensure we get patient ID
@@ -58,7 +58,7 @@ const Appointment = () => {
         setLoading(true);
         try {
             const response = await axios.post(
-                `https://smart-health-care-web.netlify.app/api/doctor/appointments/create/${id}/`,
+                `http://health-care-nine-indol.vercel.app/api/doctor/appointments/create/${id}/`,
                 appointmentData,
                 {
                     headers: {
