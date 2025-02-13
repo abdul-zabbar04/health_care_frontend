@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { Link } from "react-router";
 
 const Profile = () => {
     const [userData, setUserData] = useState(null);
@@ -518,6 +519,12 @@ const Profile = () => {
                             Edit Profile
                         </button>
                     )}
+                    <Link
+                    to="/password/change"
+                    className="btn btn-primary"
+                  >
+                    Change Password
+                  </Link>
                     {/* <button
                         onClick={handleDeleteAccount}
                         className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"

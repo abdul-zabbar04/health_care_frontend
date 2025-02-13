@@ -21,6 +21,7 @@ import DoctorSignup from './Components/Authentication/DoctorSignup.jsx'
 import Checkout from './pages/checkout/Checkout.jsx'
 import SuccessPayment from './pages/checkout/SuccessPayment.jsx'
 import FailedPayment from './pages/checkout/FailedPayment.jsx'
+import PasswordChange from './Components/Authentication/PasswordChange.jsx'
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
@@ -37,6 +38,7 @@ createRoot(document.getElementById('root')).render(
         <Route path='/view-profile' element={<Profile></Profile>}/>
         <Route path='/patient-register' element={<PatientSignup/>}/>
         <Route path='/doctor-register' element={<DoctorSignup></DoctorSignup>}/>
+        <Route path='/password/change' element={<PasswordChange></PasswordChange>}/>
         <Route path="*" element={<Error></Error>} />
       </Route>
       {/* Authentication routes */}
