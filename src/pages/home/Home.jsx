@@ -9,8 +9,8 @@ import Carousel from '../../Components/Carousel/Carousel';
 const Home = () => {
     return (
         <div>
-            {/* <Hero></Hero> */}
-            <Carousel></Carousel>
+            <Hero></Hero>
+            {/* <Carousel></Carousel> */}
             {/* <CommonHealthConcern></CommonHealthConcern>
             <Specialist></Specialist> */}
             <SpecialistAndHealthConcern/>
