@@ -98,6 +98,24 @@ const getUserType = async (authToken) => {
 };
 
 const PatientDashboard = ({ appointments }) => {
+    const authToken = localStorage.getItem("authToken");
+    // const { appointment_id } = useParams();
+    const DeleteAppointment = async (appointmentId) => {
+        try {
+            const response = await axios.delete(
+                `https://health-care-nine-indol.vercel.app/api/doctor/appointments/${appointmentId}/`,
+                {
+                    headers: {
+                        Authorization: `Token ${authToken}`,
+                    },
+                }
+            );
+            console.log('Appointment deleted:', response.data);
+            alert("Appointment Deleted! Reload the page to update dashboard.")
+        } catch (error) {
+            console.error('Error completing the appointment:', error);
+        }
+    };
     return (
         <div className="text-center my-10">
             <div className="text-center my-10">
@@ -139,11 +157,15 @@ const PatientDashboard = ({ appointments }) => {
                                         <td className="px-4 py-3 flex items-center space-x-2 text-sm text-gray-800">
                                             <span className="text-purple-600">
                                                 {appointment.is_paid ? (
-                                                    <Link target="_blank" to={appointment.meeting_link} className="btn btn-xs">
-                                                        Meet
-                                                    </Link>
+                                                    appointment.status === "Confirmed" ? (
+                                                        <Link target="_blank" to={appointment.meeting_link} className="btn btn-xs">
+                                                            Meet
+                                                        </Link>
+                                                    ) : appointment.status === "Completed" ? (
+                                                        <button className="btn btn-xs">Review</button>
+                                                    ) : null
                                                 ) : (
-                                                    <span className="btn btn-xs disabled">Payment to get meet link</span>
+                                                    <span className="btn btn-xs disabled">Payment to get meet</span>
                                                 )}
                                             </span>
                                             <span>{appointment.doctor_name}</span>
@@ -175,7 +197,12 @@ const PatientDashboard = ({ appointments }) => {
                                                 {appointment.is_paid ? "Paid" : "Pay"}
                                             </Link>
                                             {!appointment.is_paid && (
-                                                <button className="btn btn-error btn-xs mx-1">Delete</button>
+                                                <button
+                                                className="btn btn-xs mx-1 btn-warning"
+                                                onClick={() => DeleteAppointment(appointment.id)}  // Call the completeAppointment function
+                                            >
+                                                Delete
+                                            </button>
                                             )}
                                         </td>
                                     </tr>
@@ -204,6 +231,7 @@ const DoctorDashboard = ({ appointments }) => {
                 }
             );
             console.log('Appointment completed:', response.data);
+            alert("Appointment Completed! Reload to update dashboard.")
             // You may want to update the state here to reflect the appointment status change
         } catch (error) {
             console.error('Error completing the appointment:', error);
@@ -249,12 +277,12 @@ const DoctorDashboard = ({ appointments }) => {
                                         <td className="px-4 py-3 text-sm text-gray-800">{index + 1}</td>
                                         <td className="px-4 py-3 flex items-center space-x-2 text-sm text-gray-800">
                                             <span className="text-purple-600">
-                                                {appointment.meeting_link ? (
+                                                {appointment.status === "Confirmed" ? (
                                                     <Link target="_blank" to={appointment.meeting_link} className="btn btn-xs">
                                                         Meet
                                                     </Link>
                                                 ) : (
-                                                    <span className="btn btn-xs disabled">No Meeting Link</span>
+                                                    <span className="btn btn-xs disabled">Finished</span>
                                                 )}
                                             </span>
                                             <span>{appointment.patient_name}</span>
@@ -284,6 +312,13 @@ const DoctorDashboard = ({ appointments }) => {
                                                     onClick={() => completeAppointment(appointment.id)}  // Call the completeAppointment function
                                                 >
                                                     Complete
+                                                </button>
+                                            )}
+                                            {appointment.status == "Completed" && (
+                                                <button
+                                                    className="btn btn-xs mx-1 btn-warning" disabled
+                                                >
+                                                    Completed
                                                 </button>
                                             )}
                                         </td>

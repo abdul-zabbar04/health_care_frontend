@@ -224,24 +224,24 @@ const Profile = () => {
     };
 
     // Handle account deletion (DELETE request)
-    const handleDeleteAccount = async () => {
-        if (!window.confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
-            return;
-        }
-        try {
-            await axios.delete(API_URL, {
-                headers: {
-                    Authorization: `Token ${authToken}`,
-                },
-            });
-            localStorage.removeItem("authToken");
-            localStorage.removeItem("userRole");
-            alert("Account deleted successfully.");
-            setUserData(null);
-        } catch (err) {
-            setError("Failed to delete account");
-        }
-    };
+    // const handleDeleteAccount = async () => {
+    //     if (!window.confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
+    //         return;
+    //     }
+    //     try {
+    //         await axios.delete(API_URL, {
+    //             headers: {
+    //                 Authorization: `Token ${authToken}`,
+    //             },
+    //         });
+    //         localStorage.removeItem("authToken");
+    //         localStorage.removeItem("userRole");
+    //         alert("Account deleted successfully.");
+    //         setUserData(null);
+    //     } catch (err) {
+    //         setError("Failed to delete account");
+    //     }
+    // };
 
     if (loading) {
         return <div className="flex justify-center items-center h-[50vh]">
@@ -518,12 +518,12 @@ const Profile = () => {
                             Edit Profile
                         </button>
                     )}
-                    <button
+                    {/* <button
                         onClick={handleDeleteAccount}
                         className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
                     >
                         Delete Account
-                    </button>
+                    </button> */}
                 </div>
 
             </div>
