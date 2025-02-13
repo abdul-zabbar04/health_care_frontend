@@ -48,6 +48,7 @@ const PasswordChange = () => {
           value={oldPassword}
           onChange={(e) => setOldPassword(e.target.value)}
           className="input input-bordered w-full mb-3"
+          required
         />
 
         <input
@@ -56,6 +57,7 @@ const PasswordChange = () => {
           value={newPassword}
           onChange={(e) => setNewPassword(e.target.value)}
           className="input input-bordered w-full mb-3"
+          required
         />
 
         <input
@@ -64,6 +66,7 @@ const PasswordChange = () => {
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
           className="input input-bordered w-full mb-3"
+          required
         />
 
         <button className="btn btn-primary w-full" onClick={handlePasswordChange}>
