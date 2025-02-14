@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
+import { Link } from "react-router";
 
 const Appointment = () => {
+    const navigate= useNavigate()
     const [appointmentDate, setAppointmentDate] = useState("");
     const [appointmentTime, setAppointmentTime] = useState(""); // Add time state
     const [reason, setReason] = useState("");
@@ -73,6 +75,7 @@ const Appointment = () => {
                 setAppointmentDate("");
                 setAppointmentTime(""); // Reset time slot
                 setReason("");
+                navigate(`/checkout/${response.data.id}`);
             }
         } catch (err) {
             console.error("API Error:", err.response?.data);
