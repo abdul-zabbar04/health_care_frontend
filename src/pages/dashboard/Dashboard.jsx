@@ -162,7 +162,7 @@ const PatientDashboard = ({ appointments }) => {
                                                             Meet
                                                         </Link>
                                                     ) : appointment.status === "Completed" ? (
-                                                        <button className="btn btn-xs">Review</button>
+                                                        <Link to={`/review/create/${appointment.doctor}/${appointment.patient}`} className="btn btn-xs">Review</Link>
                                                     ) : null
                                                 ) : (
                                                     <span className="btn btn-xs disabled">Payment to get meet</span>

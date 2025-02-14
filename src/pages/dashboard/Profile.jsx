@@ -18,7 +18,7 @@ const Profile = () => {
     const [DoctorForm, setDoctorForm] = useState({
         BMDC_number: "",
         degrees: "",
-        fee:"",
+        fee: "",
         hospital_name: "",
         experience: "",
         biography: "",
@@ -520,11 +520,11 @@ const Profile = () => {
                         </button>
                     )}
                     <Link
-                    to="/password/change"
-                    className="btn btn-primary"
-                  >
-                    Change Password
-                  </Link>
+                        to="/password/change"
+                        className="btn btn-primary"
+                    >
+                        Change Password
+                    </Link>
                     {/* <button
                         onClick={handleDeleteAccount}
                         className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"

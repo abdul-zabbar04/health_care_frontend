@@ -19,12 +19,12 @@ const Login = () => {
                 data
             );
             // **Save the token in local storage**
-            const authToken= response.data.key;
+            const authToken = response.data.key;
             localStorage.setItem("authToken", response.data.key); // Adjust the key if your API uses a different name
             const userResponse = await axios.get("https://health-care-nine-indol.vercel.app/api/auth/user/", {
                 headers: { Authorization: `Token ${authToken}` },
             });
-    
+
             const userRole = userResponse.data.role; // Extract role from user data
             console.log(userRole);
             localStorage.setItem("userRole", userRole);
@@ -36,8 +36,8 @@ const Login = () => {
             console.error("Full Error:", error); // Log full error
             console.error("Error Response Data:", error.response?.data); // Log API error details
             alert(
-              error.response?.data?.detail ||
-              "An error occurred during login. Please try again."
+                error.response?.data?.detail ||
+                "An error occurred during login. Please try again."
             );
         }
     };
@@ -59,10 +59,10 @@ const Login = () => {
                                             {...register("email", {
                                                 required: "Email is required",
                                                 pattern: {
-                                                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                                                  message: "Enter a valid email address",
+                                                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                                                    message: "Enter a valid email address",
                                                 },
-                                              })}
+                                            })}
                                             autoComplete="on"
                                             id="email"
                                             name="email"
@@ -101,6 +101,12 @@ const Login = () => {
                                             Submit
                                         </button>
                                     </div>
+                                        {/* <Link
+                                            to="/password/reset"
+                                            className="text-sm font-light text-gray-500 dark:text-gray-400"
+                                        >
+                                            Forget Password
+                                        </Link> */}
                                 </form>
                             </div>
                         </div>
