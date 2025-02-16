@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import axios from "axios";
-import { toast } from "react-hot-toast";
 
 const PasswordResetConfirm = () => {
   const { uid, token } = useParams(); // Extract uid and token from URL
@@ -12,7 +11,7 @@ const PasswordResetConfirm = () => {
 
   const handleResetPassword = async () => {
     if (newPassword !== confirmPassword) {
-      toast.error("Passwords do not match!");
+      alert.error("Passwords do not match!");
       return;
     }
 
@@ -29,12 +28,12 @@ const PasswordResetConfirm = () => {
         }
       );
 
-      toast.success("Password reset successful!");
+      alert("Password reset successful!");
       setNewPassword("");
       setConfirmPassword("");
       navigate('/login')
     } catch (error) {
-      toast.error("Failed to reset password. Please try again.");
+      alert("Failed to reset password. Please try again with strong password.");
     } finally {
       setLoading(false);
     }
