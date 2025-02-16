@@ -25,6 +25,7 @@ import PasswordChange from './Components/Authentication/PasswordChange.jsx'
 import PasswordResetRequest from './Components/Authentication/PasswordResetRequest.jsx'
 import ReviewForm from './pages/doctor_details/ReviewForm.jsx'
 import DoctorReviews from './pages/doctor_details/DoctorReviews.jsx'
+import PasswordResetConfirm from './Components/Authentication/PasswordResetConfirm.jsx'
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
@@ -50,6 +51,7 @@ createRoot(document.getElementById('root')).render(
       <Route path="/login" element={<Login/>} />
       <Route path="/signup" element={<Signup/>} />
       <Route path="/password/reset" element={<PasswordResetRequest></PasswordResetRequest>} />
+      <Route path="password/reset/:uid/:token" element={<PasswordResetConfirm></PasswordResetConfirm>} />
       <Route path="/logout" element={<Logout></Logout>} />
       {/* payment routes */}
       <Route path="/checkout/:id" element={<Checkout></Checkout>}/>

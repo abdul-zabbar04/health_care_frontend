@@ -101,12 +101,12 @@ const Login = () => {
                                             Submit
                                         </button>
                                     </div>
-                                        {/* <Link
+                                        <Link
                                             to="/password/reset"
                                             className="text-sm font-light text-gray-500 dark:text-gray-400"
                                         >
                                             Forget Password
-                                        </Link> */}
+                                        </Link>
                                 </form>
                             </div>
                         </div>
