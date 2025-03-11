@@ -1,18 +1,21 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Link, useNavigate } from 'react-router';  // Import useNavigate
 import { useForm } from "react-hook-form";
 import axios from 'axios';
 
 const Login = () => {
     const navigate = useNavigate();  // Initialize the navigate function
+    const [loading, setLoading] = useState(false);  // Loading state
 
     const {
         register,  // Register inputs to react-hook-form
         handleSubmit,  // Handles form submission
+        setValue, // for auto login
         formState: { errors },  // Holds validation errors
     } = useForm();
 
     const onSubmit = async (data) => {
+        setLoading(true); // Set loading state to true on submit
         try {
             const response = await axios.post(
                 "https://health-care-nine-indol.vercel.app/api/auth/login/",
@@ -39,6 +42,19 @@ const Login = () => {
                 error.response?.data?.detail ||
                 "An error occurred during login. Please try again."
             );
+        }finally {
+            setLoading(false); // Reset loading state after submission
+        }
+    };
+
+    // Autofill demo credentials
+    const fillDemoCredentials = (role) => {
+        if (role === "doctor") {
+            setValue("email", "abdul.zabbar00019@gmail.com");
+            setValue("password", "12345Mac");
+        } else if (role === "patient") {
+            setValue("email", "abdul.zabbar00020@gmail.com");
+            setValue("password", "12345Mac");
         }
     };
 
@@ -50,6 +66,20 @@ const Login = () => {
                     <div className="max-w-md mx-auto">
                         <div>
                             <h1 className="text-2xl font-semibold">Login</h1>
+                            <button 
+                                type="button" 
+                                className="btn btn-xs btn-primary" 
+                                onClick={() => fillDemoCredentials("doctor")}
+                            >
+                                Demo Doctor
+                            </button>
+                            <button 
+                                type="button" 
+                                className="btn btn-xs btn-primary mx-2" 
+                                onClick={() => fillDemoCredentials("patient")}
+                            >
+                                Demo Patient
+                            </button>
                         </div>
                         <div className="divide-y divide-gray-200">
                             <div className="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
@@ -97,16 +127,20 @@ const Login = () => {
                                         {errors.password && <span className="text-red-500 text-sm">{errors.password.message}</span>}
                                     </div>
                                     <div className="relative">
-                                        <button type="submit" className="bg-cyan-500 text-white rounded-md px-2 py-1">
-                                            Submit
+                                    <button 
+                                            type="submit" 
+                                            className="bg-cyan-500 text-white rounded-md px-2 py-1"
+                                            disabled={loading} // Disable button when loading
+                                        >
+                                            {loading ? "Logging in..." : "Login"}
                                         </button>
                                     </div>
-                                        <Link
-                                            to="/password/reset"
-                                            className="text-sm font-light text-gray-500 dark:text-gray-400"
-                                        >
-                                            Forget Password
-                                        </Link>
+                                    <Link
+                                        to="/password/reset"
+                                        className="text-sm font-light text-gray-500 dark:text-gray-400"
+                                    >
+                                        Forget Password
+                                    </Link>
                                 </form>
                             </div>
                         </div>
