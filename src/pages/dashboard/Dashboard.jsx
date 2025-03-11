@@ -8,6 +8,7 @@ const Dashboard = () => {
     const [appointments, setAppointments] = useState([]);
     const [userType, setUserType] = useState(null);
     const authToken = localStorage.getItem("authToken");
+    const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         if (!authToken) {
@@ -52,6 +53,7 @@ const Dashboard = () => {
 
                 console.log(dashboardData);
                 setAppointments(dashboardData.data);
+                setLoading(false)
 
             } catch (error) {
                 // Log error details to help with debugging
@@ -64,7 +66,6 @@ const Dashboard = () => {
     }, [authToken]);
 
     if (profileCompleted === null) return <div className="text-center my-10 text-gray-600">Loading...</div>;
-
     if (!profileCompleted)
         return (
             <div className="text-center my-10">
@@ -80,7 +81,7 @@ const Dashboard = () => {
             </div>
         );
 
-    return userType === "patient" ? <PatientDashboard appointments={appointments} /> : <DoctorDashboard appointments={appointments} />;
+    return userType === "patient" ? <PatientDashboard appointments={appointments} loading={loading} /> : <DoctorDashboard appointments={appointments} loading={loading} />;
 };
 
 // Separate function to get role
@@ -97,9 +98,10 @@ const getUserType = async (authToken) => {
     }
 };
 
-const PatientDashboard = ({ appointments }) => {
+const PatientDashboard = ({ appointments, loading }) => {
     const authToken = localStorage.getItem("authToken");
     // const { appointment_id } = useParams();
+    const x=0
     const DeleteAppointment = async (appointmentId) => {
         try {
             const response = await axios.delete(
@@ -144,70 +146,77 @@ const PatientDashboard = ({ appointments }) => {
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
-                            {appointments.length === 0 ? (
-                                <tr>
-                                    <td colSpan="6" className="text-center py-4 text-gray-500">
-                                        No appointments available.
-                                    </td>
-                                </tr>
-                            ) : (
-                                appointments.map((appointment, index) => (
-                                    <tr key={appointment.id}>
-                                        <td className="px-4 py-3 text-sm text-gray-800">{index + 1}</td>
-                                        <td className="px-4 py-3 flex items-center space-x-2 text-sm text-gray-800">
-                                            <span className="text-purple-600">
-                                                {appointment.is_paid ? (
-                                                    appointment.status === "Confirmed" ? (
-                                                        <Link target="_blank" to={appointment.meeting_link} className="btn btn-xs">
-                                                            Meet
-                                                        </Link>
-                                                    ) : appointment.status === "Completed" ? (
-                                                        <Link to={`/review/create/${appointment.doctor}/${appointment.patient}`} className="btn btn-xs">Review</Link>
-                                                    ) : null
-                                                ) : (
-                                                    <span className="btn btn-xs disabled">Payment to get meet</span>
-                                                )}
-                                            </span>
-                                            <span>{appointment.doctor_name}</span>
-                                        </td>
-                                        <td className="px-4 py-3 text-sm text-gray-800">
-                                            {appointment.reason}
-                                        </td>
-                                        <td className="px-4 py-3 text-sm text-gray-800">
-                                            {`${appointment.appointment_date} ${appointment.appointment_time}`}
-                                        </td>
-                                        <td className="px-4 py-3">
-                                            <span
-                                                className={`px-3 py-1 text-xs font-medium rounded-full ${appointment.status === "Pending"
-                                                    ? "text-pink-700 bg-pink-100"
-                                                    : appointment.status === "Confirmed"
-                                                        ? "text-green-700 bg-green-100"
-                                                        : "text-gray-700 bg-gray-100"
-                                                    }`}
-                                            >
-                                                {appointment.status}
-                                            </span>
-                                        </td>
-                                        <td className="px-4 py-3">
-                                            <Link
-                                                to={appointment.is_paid ? "#" : `/checkout/${appointment.id}`}
-                                                className={`btn btn-xs mx-1 ${appointment.is_paid ? "btn-success opacity-50 pointer-events-none" : "btn-warning"}`}
-                                                tabIndex={appointment.is_paid ? "-1" : "0"}
-                                            >
-                                                {appointment.is_paid ? "Paid" : "Pay"}
-                                            </Link>
-                                            {!appointment.is_paid && (
-                                                <button
-                                                className="btn btn-xs mx-1 btn-warning"
-                                                onClick={() => DeleteAppointment(appointment.id)}  // Call the completeAppointment function
-                                            >
-                                                Delete
-                                            </button>
-                                            )}
+                            {loading ? (
+                                <div className="flex justify-center p-5 w-full">
+                                    <span className="loading loading-bars loading-xs"></span>
+                                </div>
+
+
+                            ) :
+                                appointments.length === 0 ? (
+                                    <tr>
+                                        <td colSpan="6" className="text-center py-4 text-gray-500">
+                                            No appointments available.
                                         </td>
                                     </tr>
-                                ))
-                            )}
+                                ) : (
+                                    appointments.map((appointment, index) => (
+                                        <tr key={appointment.id}>
+                                            <td className="px-4 py-3 text-sm text-gray-800">{index + 1}</td>
+                                            <td className="px-4 py-3 flex items-center space-x-2 text-sm text-gray-800">
+                                                <span className="text-purple-600">
+                                                    {appointment.is_paid ? (
+                                                        appointment.status === "Confirmed" ? (
+                                                            <Link target="_blank" to={appointment.meeting_link} className="btn btn-xs">
+                                                                Meet
+                                                            </Link>
+                                                        ) : appointment.status === "Completed" ? (
+                                                            <Link to={`/review/create/${appointment.doctor}/${appointment.patient}`} className="btn btn-xs">Review</Link>
+                                                        ) : null
+                                                    ) : (
+                                                        <span className="btn btn-xs disabled">Payment to get meet</span>
+                                                    )}
+                                                </span>
+                                                <span>{appointment.doctor_name}</span>
+                                            </td>
+                                            <td className="px-4 py-3 text-sm text-gray-800">
+                                                {appointment.reason}
+                                            </td>
+                                            <td className="px-4 py-3 text-sm text-gray-800">
+                                                {`${appointment.appointment_date} ${appointment.appointment_time}`}
+                                            </td>
+                                            <td className="px-4 py-3">
+                                                <span
+                                                    className={`px-3 py-1 text-xs font-medium rounded-full ${appointment.status === "Pending"
+                                                        ? "text-pink-700 bg-pink-100"
+                                                        : appointment.status === "Confirmed"
+                                                            ? "text-green-700 bg-green-100"
+                                                            : "text-gray-700 bg-gray-100"
+                                                        }`}
+                                                >
+                                                    {appointment.status}
+                                                </span>
+                                            </td>
+                                            <td className="px-4 py-3">
+                                                <Link
+                                                    to={appointment.is_paid ? "#" : `/checkout/${appointment.id}`}
+                                                    className={`btn btn-xs mx-1 ${appointment.is_paid ? "btn-success opacity-50 pointer-events-none" : "btn-warning"}`}
+                                                    tabIndex={appointment.is_paid ? "-1" : "0"}
+                                                >
+                                                    {appointment.is_paid ? "Paid" : "Pay"}
+                                                </Link>
+                                                {!appointment.is_paid && (
+                                                    <button
+                                                        className="btn btn-xs mx-1 btn-warning"
+                                                        onClick={() => DeleteAppointment(appointment.id)}  // Call the completeAppointment function
+                                                    >
+                                                        Delete
+                                                    </button>
+                                                )}
+                                            </td>
+                                        </tr>
+                                    ))
+                                )}
                         </tbody>
                     </table>
                 </div>
@@ -216,7 +225,7 @@ const PatientDashboard = ({ appointments }) => {
     );
 };
 
-const DoctorDashboard = ({ appointments }) => {
+const DoctorDashboard = ({ appointments, loading }) => {
     const authToken = localStorage.getItem("authToken");
     // const { appointment_id } = useParams();
     const completeAppointment = async (appointmentId) => {
@@ -265,7 +274,14 @@ const DoctorDashboard = ({ appointments }) => {
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
-                            {appointments.length === 0 ? (
+                            {loading ? (
+                                <div className="flex justify-center p-5 w-full">
+                                    <span className="loading loading-bars loading-xs"></span>
+                                </div>
+
+
+                            ) :
+                            appointments.length === 0 ? (
                                 <tr>
                                     <td colSpan="6" className="text-center py-4 text-gray-500">
                                         No appointments available.

@@ -33,7 +33,7 @@ const Logout = () => {
         handleLogout();
     }, [navigate]);
 
-    return <div>Logging out...</div>; // Display a temporary message while logging out
+    return <div className="text-center">Logging out...</div>; // Display a temporary message while logging out
 };
 
 export default Logout;
