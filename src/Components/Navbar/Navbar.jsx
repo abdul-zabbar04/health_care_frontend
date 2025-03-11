@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router";
+import { FiMoon, FiSun } from 'react-icons/fi';
+
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -34,18 +36,21 @@ const Navbar = () => {
   };
 
   // Mock authentication status and user data
-  
+
   // const userProfile = {
   //   profilePicture: profile,
   // };
 
   return (
-    <div className="fixed top-0 left-0 w-full  h-20 z-50 bg-base-100 shadow-md">
+    <div className="fixed top-0 left-0 w-full  h-18 z-50 bg-base-100 shadow-md">
       <nav className="flex items-center justify-between px-6 py-4">
         {/* Logo */}
-        <Link to="/" className="text-2xl font-bold italic text-primary">
+        <Link to="/" className="text-sm sm:text-lg md:text-2xl font-bold italic text-primary whitespace-nowrap">
           Health Care
         </Link>
+
+
+
 
         {/* Middle Navigation */}
         <div className="hidden md:flex space-x-6 text-lg font-medium">
@@ -56,24 +61,22 @@ const Navbar = () => {
             Guide
           </Link>
           <Link to="/find-doctor" className="hover:text-primary">
-            Find Doctor
+            Find
           </Link>
           <Link to="/about-us" className="hover:text-primary">
-            About Us
+            About
           </Link>
           <Link to="/contact-us" className="hover:text-primary">
-            Contact Us
+            Contact
           </Link>
         </div>
 
         {/* Right Section */}
         <div className="flex items-center space-x-1">
-        <button
-          onClick={toggleTheme}
-          className="block font-medium w-full text-left"
-        >
-          {theme === "light" ? "Dark" : "Light"}
-        </button>
+          <button onClick={toggleTheme} className="block font-medium w-full text-left">
+            {theme === "light" ? <FiMoon className="w-4 h-4" /> : <FiSun className="w-4 h-4" />}
+          </button>
+
           {/* Authenticated User */}
           {isAuthenticated ? (
             <div className="relative">
@@ -110,8 +113,8 @@ const Navbar = () => {
           ) : (
             // Unauthenticated User
             <>
-              <Link to="/login" className="px-3 py-0 btn btn btn-primary">Login</Link>
-              <Link to="/signup" className="px-3 py-0 btn btn-secondary">Sign Up</Link>
+              <Link to="/login" className="px-3 py-0 btn btn btn-primary btn-sm">Login</Link>
+              <Link to="/signup" className="px-3 py-0 btn btn-secondary btn-sm">Sign Up</Link>
             </>
           )}
 
@@ -149,13 +152,13 @@ const Navbar = () => {
               Guide
             </Link>
             <Link to="/find-doctor" className="hover:text-primary">
-              Find Doctor
+              Find
             </Link>
             <Link to="/about-us" className="hover:text-primary">
-              About Us
+              About
             </Link>
             <Link to="/contact-us" className="hover:text-primary">
-              Contact Us
+              Contact
             </Link>
           </div>
         </div>
