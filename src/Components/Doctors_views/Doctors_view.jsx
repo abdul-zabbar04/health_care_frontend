@@ -16,11 +16,11 @@ const DoctorsView = ({ specialization_id = null, health_concern_id = null }) => 
         // Construct API URL dynamically
         let apiUrl = '';
         if (specialization_id) {
-            apiUrl = `http://127.0.0.1:8000/api/doctor/list/specialization/${specialization_id}/`;
+            apiUrl = `https://health-care-nine-indol.vercel.app/api/doctor/list/specialization/${specialization_id}/`;
         } else if (health_concern_id) {
-            apiUrl = `http://127.0.0.1:8000/api/doctor/list/health_concern/${health_concern_id}/`;
+            apiUrl = `https://health-care-nine-indol.vercel.app/api/doctor/list/health_concern/${health_concern_id}/`;
         } else {
-            apiUrl = `http://127.0.0.1:8000/api/doctor/list/`;
+            apiUrl = `https://health-care-nine-indol.vercel.app/api/doctor/list/`;
         }
 
         fetchDoctors(apiUrl, 1); // Fetch first page when filter changes
@@ -31,11 +31,11 @@ const DoctorsView = ({ specialization_id = null, health_concern_id = null }) => 
         let apiUrl = '';
 
         if (specialization_id) {
-            apiUrl = `http://127.0.0.1:8000/api/doctor/list/specialization/${specialization_id}/`;
+            apiUrl = `https://health-care-nine-indol.vercel.app/api/doctor/list/specialization/${specialization_id}/`;
         } else if (health_concern_id) {
-            apiUrl = `http://127.0.0.1:8000/api/doctor/list/health_concern/${health_concern_id}/`;
+            apiUrl = `https://health-care-nine-indol.vercel.app/api/doctor/list/health_concern/${health_concern_id}/`;
         } else {
-            apiUrl = `http://127.0.0.1:8000/api/doctor/list/`;
+            apiUrl = `https://health-care-nine-indol.vercel.app/api/doctor/list/`;
         }
 
         fetchDoctors(apiUrl, currentPage);
