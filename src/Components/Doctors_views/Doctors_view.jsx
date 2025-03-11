@@ -5,36 +5,76 @@ import { Link } from 'react-router';
 const DoctorsView = ({ specialization_id = null, health_concern_id = null }) => {
     const [doctors, setDoctors] = useState([]);
     const [loading, setLoading] = useState(true);
-
-    // Log the received ids for debugging
-    console.log(specialization_id, "this is specialization id");
-    console.log(health_concern_id, "this is health concern id");
+    const [currentPage, setCurrentPage] = useState(1); // Track current page
+    const [nextPage, setNextPage] = useState(null); // URL for next page
+    const [previousPage, setPreviousPage] = useState(null); // URL for previous page
 
     useEffect(() => {
         setLoading(true); // Reset loading state
+        setCurrentPage(1); // Reset pagination when filters change
 
-        // Determine the API URL based on the available ID
-        let url = '';
-
+        // Construct API URL dynamically
+        let apiUrl = '';
         if (specialization_id) {
-            url = `https://health-care-nine-indol.vercel.app/api/doctor/list/specialization/${specialization_id}/`;
+            apiUrl = `http://127.0.0.1:8000/api/doctor/list/specialization/${specialization_id}/`;
         } else if (health_concern_id) {
-            url = `https://health-care-nine-indol.vercel.app/api/doctor/list/health_concern/${health_concern_id}/`;
+            apiUrl = `http://127.0.0.1:8000/api/doctor/list/health_concern/${health_concern_id}/`;
         } else {
-            url = 'https://health-care-nine-indol.vercel.app/api/doctor/list/'; // Default API if neither id is provided
+            apiUrl = `http://127.0.0.1:8000/api/doctor/list/`;
         }
 
-        // Fetch doctors from the API
-        axios.get(url)
+        fetchDoctors(apiUrl, 1); // Fetch first page when filter changes
+
+    }, [specialization_id, health_concern_id]); // Reset page on filter change
+
+    useEffect(() => {
+        let apiUrl = '';
+
+        if (specialization_id) {
+            apiUrl = `http://127.0.0.1:8000/api/doctor/list/specialization/${specialization_id}/`;
+        } else if (health_concern_id) {
+            apiUrl = `http://127.0.0.1:8000/api/doctor/list/health_concern/${health_concern_id}/`;
+        } else {
+            apiUrl = `http://127.0.0.1:8000/api/doctor/list/`;
+        }
+
+        fetchDoctors(apiUrl, currentPage);
+
+    }, [currentPage]); // Fetch doctors when page changes
+
+    // Fetch Doctors Function
+    const fetchDoctors = (baseUrl, page) => {
+        let apiUrl = baseUrl;
+        if (page > 1) apiUrl += `?page=${page}`;
+
+        axios.get(apiUrl)
             .then(response => {
-                setDoctors(response.data);
-                setLoading(false); // Stop loading once data is fetched
+                console.log('API Response:', response.data); // Debugging
+
+                const data = response.data.results || []; // Safely access 'results'
+                setDoctors(data);
+
+                // Handle pagination using API response
+                setNextPage(response.data.next);
+                setPreviousPage(response.data.previous);
+
+                setLoading(false);
             })
             .catch(error => {
                 console.error("Error fetching doctor list:", error);
-                setLoading(false); // Stop loading if there is an error
+                setLoading(false);
             });
-    }, [specialization_id, health_concern_id]); // Only run when either of these ids change
+    };
+
+    // Function to go to the next page
+    const goToNextPage = () => {
+        if (nextPage) setCurrentPage(prev => prev + 1);
+    };
+
+    // Function to go to the previous page
+    const goToPreviousPage = () => {
+        if (previousPage) setCurrentPage(prev => prev - 1);
+    };
 
     return (
         <div>
@@ -52,38 +92,58 @@ const DoctorsView = ({ specialization_id = null, health_concern_id = null }) => 
                     <span className="loading loading-spinner loading-md"></span>
                 </div>
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-4">
-                    {doctors.length > 0 ? (
-                        doctors.map((doctor) => (
-                            <div key={doctor.id} className="bg-white shadow-lg rounded-2xl p-4 border border-gray-200">
-                                <div className="flex items-center mb-4">
-                                    <img
-                                        src={doctor.user.profile_image}
-                                        alt={doctor.user.first_name}
-                                        className="w-20 h-20 rounded-full object-cover border-2 border-purple-300"
-                                    />
-                                    <div className="ml-4">
-                                        <h3 className="text-lg font-bold text-gray-800">{doctor.user.first_name + " " + doctor.user.last_name}</h3>
+                <div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 p-4 px-[25px]">
+                        {doctors.length > 0 ? (
+                            doctors.map((doctor) => (
+                                <div key={doctor.id} className="bg-white shadow-lg rounded-2xl p-4 border border-gray-200">
+                                    <div className="flex flex-col items-center mb-4">
+                                        <img
+                                            src={doctor.user.profile_image}
+                                            alt={doctor.user.first_name}
+                                            className="w-24 h-24 rounded-full object-cover border-2 border-purple-300 mb-3"
+                                        />
+                                        <h3 className="text-lg font-semibold text-gray-800">
+                                            {doctor.user.first_name} {doctor.user.last_name}
+                                        </h3>
                                         <p className="text-sm text-gray-500">{doctor.specialization.name}</p>
-                                        <p className="text-sm text-gray-500">{doctor.degrees}</p>
-                                        <p className="text-sm text-gray-500">{doctor.hospital_name}</p>
+                                    </div>
+                                    <p className="text-xl font-semibold text-purple-600 text-center">৳ {doctor.fee}</p>
+                                    <div className="mt-4 flex justify-between items-center">
+                                        <Link to={`/appointment/${doctor.id}`} className="bg-purple-500 text-white py-2 px-4 rounded-lg shadow hover:bg-purple-600">
+                                            Book Now
+                                        </Link>
+                                        <Link to={`/doctor/${doctor.id}`} className="text-purple-500 font-medium hover:underline">
+                                            View Details
+                                        </Link>
                                     </div>
                                 </div>
-                                <p className="text-xl font-semibold text-purple-600">৳ {doctor.fee}</p>
-                                <p className="text-sm text-gray-600 mt-2"><span>BMDC Number: </span>{doctor.BMDC_number}</p>
-                                <div className="mt-4 flex justify-between items-center">
-                                    <Link to={`/appointment/${doctor.id}`} className="bg-purple-500 text-white py-2 px-4 rounded-lg shadow hover:bg-purple-600">
-                                        Book Now
-                                    </Link>
-                                    <Link to={`/doctor/${doctor.id}`} className="text-purple-500 font-medium hover:underline">
-                                        View Details
-                                    </Link>
-                                </div>
-                            </div>
-                        ))
-                    ) : (
-                        <p className="text-center col-span-4 text-gray-500">No doctors available at the moment.</p>
-                    )}
+                            ))
+                        ) : (
+                            <p className="text-center col-span-4 text-gray-500">No doctors available at the moment.</p>
+                        )}
+                    </div>
+
+                    {/* Pagination controls */}
+                    <div className="flex justify-center space-x-4 mt-8">
+                        <button
+                            onClick={goToPreviousPage}
+                            disabled={!previousPage}
+                            className="px-4 py-2 bg-purple-500 text-white rounded-lg disabled:bg-gray-300"
+                        >
+                            Previous
+                        </button>
+                        <span className="flex items-center text-lg">
+                            Page {currentPage}
+                        </span>
+                        <button
+                            onClick={goToNextPage}
+                            disabled={!nextPage}
+                            className="px-4 py-2 bg-purple-500 text-white rounded-lg disabled:bg-gray-300"
+                        >
+                            Next
+                        </button>
+                    </div>
                 </div>
             )}
         </div>
