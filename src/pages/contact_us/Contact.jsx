@@ -40,7 +40,7 @@ const Contact = () => {
     };
 
     return (
-        <div className="bg-gray-100">
+        <div className="bg-gray-100 mt-6">
             <div className="container mx-auto py-12">
                 <div className="max-w-lg mx-auto px-4">
                     <h2 className="text-3xl font-semibold text-gray-900 mb-4">

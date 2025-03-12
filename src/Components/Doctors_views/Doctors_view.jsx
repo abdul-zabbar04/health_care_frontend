@@ -79,7 +79,7 @@ const DoctorsView = ({ specialization_id = null, health_concern_id = null }) => 
     return (
         <div>
             <div className="text-center my-10">
-                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-650 leading-tight">
+                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-650 leading-tight mt-20">
                     Specialist Doctors
                 </h1>
                 <p className="text-md sm:text-lg md:text-xl text-gray-500 dark:text-gray-500 mt-2">
