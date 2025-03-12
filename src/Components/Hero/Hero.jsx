@@ -3,7 +3,7 @@ import { Link } from "react-router";
 
 const HeroSection = () => {
   return (
-    <section className="hero mt-[-1rem] h-auto py-8 bg-gradient-to-r from-blue-300 to-indigo-300 text-black flex items-center justify-center">
+    <section className="hero mt-[3rem] h-auto py-8 bg-gradient-to-r from-blue-300 to-indigo-300 text-black flex items-center justify-center">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center max-w-6xl w-full px-6">
         {/* Image Section */}
         <div className="flex justify-center">

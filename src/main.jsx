@@ -26,37 +26,47 @@ import PasswordResetRequest from './Components/Authentication/PasswordResetReque
 import ReviewForm from './pages/doctor_details/ReviewForm.jsx'
 import DoctorReviews from './pages/doctor_details/DoctorReviews.jsx'
 import PasswordResetConfirm from './Components/Authentication/PasswordResetConfirm.jsx'
-
+import ProtectedRoute from './routes/ProtectedRoute.jsx'
+import ProtectedRouteNav from './routes/ProtectedRouteNav.jsx'
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
     <Routes>
-      <Route element={<App/>}>
+      <Route element={<App />}>
         <Route path="/" element={<Home></Home>} />
         <Route path="/guide" element={<StepsGuide></StepsGuide>} />
         <Route path="/find-doctor" element={<Doctors_view></Doctors_view>} />
         <Route path="/doctor/:id" element={<DoctorDetails></DoctorDetails>} />
-        <Route path="/appointment/:id" element={<Appointment></Appointment>} />
         <Route path="/about-us" element={<About></About>} />
         <Route path="/contact-us" element={<Contact></Contact>} />
-        <Route path="/dashboard" element={<Dashboard></Dashboard>} />
-        <Route path='/view-profile' element={<Profile></Profile>}/>
-        <Route path='/patient-register' element={<PatientSignup/>}/>
-        <Route path='/doctor-register' element={<DoctorSignup></DoctorSignup>}/>
-        <Route path='/password/change' element={<PasswordChange></PasswordChange>}/>
-        <Route path='/review/create/:doctor/:patient' element={<ReviewForm></ReviewForm>}/>
-        <Route path='/reviews/:doctor' element={<DoctorReviews></DoctorReviews>}/>
+        <Route path='/password/change' element={<PasswordChange></PasswordChange>} />
+        <Route path='/review/create/:doctor/:patient' element={<ReviewForm></ReviewForm>} />
+        <Route path='/reviews/:doctor' element={<DoctorReviews></DoctorReviews>} />
         <Route path="*" element={<Error></Error>} />
       </Route>
       {/* Authentication routes */}
-      <Route path="/login" element={<Login/>} />
-      <Route path="/signup" element={<Signup/>} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<Signup />} />
       <Route path="/password/reset" element={<PasswordResetRequest></PasswordResetRequest>} />
       <Route path="password/reset/:uid/:token" element={<PasswordResetConfirm></PasswordResetConfirm>} />
       <Route path="/logout" element={<Logout></Logout>} />
-      {/* payment routes */}
-      <Route path="/checkout/:id" element={<Checkout></Checkout>}/>
-      <Route path="/payment-success/:id" element={<SuccessPayment/>} />
-      <Route path="/payment-fail/" element={<FailedPayment/>} />
+
+
+      {/* protected routes */}
+      <Route element={<ProtectedRouteNav />}>
+        <Route path='/patient-register' element={<PatientSignup />} />
+        <Route path='/doctor-register' element={<DoctorSignup></DoctorSignup>} />
+        <Route path="/dashboard" element={<Dashboard></Dashboard>} />
+        <Route path='/view-profile' element={<Profile></Profile>} />
+        <Route path="/appointment/:id" element={<Appointment></Appointment>} />
+      </Route>
+
+      <Route element={<ProtectedRoute />}>
+        {/* payment routes */}
+        <Route path="/checkout/:id" element={<Checkout></Checkout>} />
+        <Route path="/payment-success/:id" element={<SuccessPayment />} />
+        <Route path="/payment-fail/" element={<FailedPayment />} />
+        <Route path="/password/change" element={<PasswordChange />} />
+      </Route>
     </Routes>
   </BrowserRouter>,
 );

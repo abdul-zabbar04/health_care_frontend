@@ -119,8 +119,8 @@ const PatientDashboard = ({ appointments, loading }) => {
         }
     };
     return (
-        <div className="text-center my-10">
-            <div className="text-center my-10">
+        <div className="text-center">
+            <div className="text-center">
                 <h5 className="text-2xl sm:text-2xl md:text-3xl lg:text-3xl font-bold text-gray-650 leading-tight">
                     Your Appointments
                 </h5>

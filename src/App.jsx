@@ -10,7 +10,7 @@ function App() {
     <>
     <Toaster position="top-right" reverseOrder={false} />
     <Navbar></Navbar>
-    <main className='justify-center pt-20 min-h-screen'>
+    <main className='justify-center pt-18 min-h-screen'>
     <Outlet/>
     </main>
     <Footer/>
