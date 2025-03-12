@@ -34,5 +34,5 @@ This is the **frontend** of the Health Care platform, built using **React**, **T
 ## 📦 Setup Instructions
 1. Clone the repository:
    ```sh
-   git clone <frontend-repo-url>
+   git clone https://github.com/abdul-zabbar04/health_care_frontend.git
 
