@@ -8,7 +8,8 @@ const DoctorsView = ({ specialization_id = null, health_concern_id = null }) => 
     const [currentPage, setCurrentPage] = useState(1); // Track current page
     const [nextPage, setNextPage] = useState(null); // URL for next page
     const [previousPage, setPreviousPage] = useState(null); // URL for previous page
-
+    const authToken = localStorage.getItem("authToken");
+    const userRole = localStorage.getItem("userRole");
     useEffect(() => {
         setLoading(true); // Reset loading state
         setCurrentPage(1); // Reset pagination when filters change
@@ -109,10 +110,16 @@ const DoctorsView = ({ specialization_id = null, health_concern_id = null }) => 
                                         <p className="text-sm text-gray-500">{doctor.specialization.name}</p>
                                     </div>
                                     <p className="text-xl font-semibold text-purple-600 text-center">৳ {doctor.fee}</p>
-                                    <div className="mt-4 flex justify-between items-center">
-                                        <Link to={`/appointment/${doctor.id}`} className="bg-purple-500 text-white py-2 px-4 rounded-lg shadow hover:bg-purple-600">
-                                            Book Now
-                                        </Link>
+                                    <div className="mt-4 flex justify-center items-center gap-4">
+                                        {/* Show "Book Now" only if user is authenticated and is a patient */}
+                                        {authToken && userRole === "patient" && (
+                                            <Link
+                                                to={`/appointment/${doctor.id}`}
+                                                className="bg-purple-500 text-white py-2 px-4 rounded-lg shadow hover:bg-purple-600"
+                                            >
+                                                Book Now
+                                            </Link>
+                                        )}
                                         <Link to={`/doctor/${doctor.id}`} className="text-purple-500 font-medium hover:underline">
                                             View Details
                                         </Link>

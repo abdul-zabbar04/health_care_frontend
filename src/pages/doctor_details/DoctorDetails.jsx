@@ -6,6 +6,8 @@ import { Link } from 'react-router';
 const DoctorDetails = () => {
     const { id } = useParams();
     const [doctor, setDoctor] = useState(null);
+    const authToken = localStorage.getItem("authToken");
+    const userRole = localStorage.getItem("userRole");
 
     useEffect(() => {
         axios.get(`https://health-care-nine-indol.vercel.app/api/doctor/list/${id}`)
@@ -44,19 +46,21 @@ const DoctorDetails = () => {
                     <p className="text-gray-600 text-center sm:text-left">
                         Check patient reviews to make an informed decision, and book an appointment with just a click. Get the best healthcare experience effortlessly!
                     </p>
-                    <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+                    <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
                         <Link
                             to={`/reviews/${doctor.id}`}
                             className="w-full sm:w-auto text-center bg-purple-500 text-white py-2 px-4 rounded-lg shadow hover:bg-purple-600"
                         >
                             Doctor Reviews
                         </Link>
-                        <Link
-                            to={`/appointment/${doctor.id}`}
-                            className="w-full sm:w-auto text-center bg-purple-500 text-white py-2 px-4 rounded-lg shadow hover:bg-purple-600"
-                        >
-                            Book Now
-                        </Link>
+                        {authToken && userRole === "patient" && (
+                            <Link
+                                to={`/appointment/${doctor.id}`}
+                                className="w-full sm:w-auto text-center bg-purple-500 text-white py-2 px-4 rounded-lg shadow hover:bg-purple-600"
+                            >
+                                Book Now
+                            </Link>
+                        )}
                     </div>
                 </div>
             </div>

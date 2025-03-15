@@ -297,8 +297,8 @@ const DoctorDashboard = ({ appointments, loading }) => {
     const doctorStats = {
         profileViews: doctorData?.total_views || 0,
         totalAppointments: doctorData?.total_appointments || 0,
-        totalIncome: doctorData?.total_earned || "৳ 0",
-        CurrentBalance: doctorData?.total_earned || "৳ 0",
+        totalIncome: doctorData?.total_earned || "0",
+        CurrentBalance: doctorData?.total_earned || "0",
         totalComments: doctorData?.total_comments || "0",
     };
 
