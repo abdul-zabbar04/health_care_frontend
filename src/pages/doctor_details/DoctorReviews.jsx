@@ -29,7 +29,7 @@ const DoctorReviews = () => {
     }
 
     return (
-        <div className="container mx-auto px-4 py-10">
+        <div className="container mx-auto px-4 py-10 mt-10">
             <button
                 onClick={() => navigate(-1)} // Navigate back to the previous page
                 className="bg-blue-500 text-white py-2 px-4 rounded-md mb-6">
