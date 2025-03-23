@@ -10,7 +10,7 @@ const HeroSection = () => {
           <img
             src="/heroSection.png"
             alt="Doctor with Patient"
-            className="rounded-lg shadow-xl w-[80%] sm:w-[70%] md:w-[60%] lg:w-1/2 max-w-[350px] sm:max-w-[400px] mx-auto"
+            className="rounded-lg w-[80%] sm:w-[70%] md:w-[60%] lg:w-1/2 max-w-[350px] sm:max-w-[400px] mx-auto"
           />
         </div>
 
@@ -26,7 +26,7 @@ const HeroSection = () => {
             <Link to="/guide" className="btn btn-primary text-sm sm:text-base px-4 py-2 sm:px-6 sm:py-3">
               Get Guideline
             </Link>
-            <Link to="/find-doctor" className="btn btn-outline text-white border-white text-sm sm:text-base px-4 py-2 sm:px-6 sm:py-3">
+            <Link to="/find-doctor" className="btn btn-outline text-white border-white text-sm sm:text-base px-4 py-2 sm:px-6 sm:py-3 hover:bg-primary">
               Find a Doctor
             </Link>
           </div>

@@ -20,16 +20,27 @@ const DoctorReviews = () => {
             });
     }, [doctor]);
 
+    // Loading state
     if (loading) {
-        return <p className="text-center text-gray-600 text-lg font-semibold">Loading...</p>;
+        return (
+            <div className="container mx-auto px-4 py-10 mt-20 h-screen flex items-center justify-center">
+                <p className="text-center text-gray-600 text-xl font-semibold">Loading...</p>
+            </div>
+        );
     }
 
+    // No reviews available state
     if (reviews.length === 0) {
-        return <p className="text-center text-gray-600 text-lg font-semibold">No reviews available.</p>;
+        return (
+            <div className="container mx-auto px-4 py-10 mt-20 h-screen flex items-center justify-center">
+                <p className="text-center text-gray-600 text-xl font-semibold">No reviews available.</p>
+            </div>
+        );
     }
 
+    // Main content when reviews are available
     return (
-        <div className="container mx-auto px-4 py-10 mt-10">
+        <div className="container mx-auto px-4 py-10 mt-20">
             <button
                 onClick={() => navigate(-1)} // Navigate back to the previous page
                 className="bg-blue-500 text-white py-2 px-4 rounded-md mb-6">

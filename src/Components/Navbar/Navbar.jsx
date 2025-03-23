@@ -113,8 +113,13 @@ const Navbar = () => {
           ) : (
             // Unauthenticated User
             <>
-              <Link to="/login" className="px-3 py-0 btn btn btn-primary btn-sm">Login</Link>
-              <Link to="/signup" className="px-3 py-0 btn btn-secondary btn-sm">Sign Up</Link>
+              <Link to="/login" className="px-3 py-0 btn btn-sm border-[#4A00FF] text-[#4A00FF] hover:bg-[#4A00FF] hover:text-white">
+                Login
+              </Link>
+              <Link to="/signup" className="px-3 py-0 btn btn-sm bg-[#4A00FF] text-white border border-[#4A00FF] hover:bg-[#3a00cc]">
+                Sign Up
+              </Link>
+
             </>
           )}
 

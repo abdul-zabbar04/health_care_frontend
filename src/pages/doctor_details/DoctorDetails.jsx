@@ -20,7 +20,7 @@ const DoctorDetails = () => {
     }
 
     return (
-        <div className="container mx-auto px-4 py-10">
+        <div className="container mx-auto px-4 py-10 mt-4">
             {/* Doctor Profile Section */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="flex flex-col sm:flex-row items-center bg-white shadow-lg rounded-lg p-6">

@@ -3,11 +3,11 @@ import axios from 'axios';
 import { useParams } from 'react-router';
 
 const ReviewForm = () => {
-    const [rating, setRating] = useState('');
+    const [rating, setRating] = useState('★★★★★');
     const [body, setBody] = useState('');
     const [authToken, setAuthToken] = useState(localStorage.getItem('authToken'));
-    const {doctor} = useParams()
-    const {patient} = useParams()
+    const { doctor } = useParams()
+    const { patient } = useParams()
     const handleSubmit = (e) => {
         e.preventDefault();
 
@@ -17,14 +17,15 @@ const ReviewForm = () => {
             doctor,
             patient,
         };
-
+        console.log(reviewData);
         axios.post(`https://health-care-nine-indol.vercel.app/api/doctor/review/${doctor}/`, reviewData, {
             headers: {
                 'Authorization': `Token ${authToken}`,
             },
         })
             .then(response => {
-                setRating('');
+                console.log(response, "this is the review response");
+                setRating('★★★★★');
                 setBody('');
                 alert('Review submitted successfully!');
             })
@@ -58,8 +59,8 @@ const ReviewForm = () => {
                         id="body"
                         name="body"
                         className="w-full px-3 py-2 border border-gray-300 rounded"
-                        maxLength="300"
-                        placeholder="Write your review here..."
+                        maxLength="100"
+                        placeholder="Share your thoughts in 100 characters or less."
                         value={body}
                         onChange={(e) => setBody(e.target.value)}
                     />
